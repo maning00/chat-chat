@@ -1,0 +1,22 @@
+[
+{
+  "directory": "/Users/maning/Code/chat/server/build",
+  "command": "/usr/bin/clang++    -lprotobuf -g   -std=gnu++14 -o CMakeFiles/server.dir/main.cpp.o -c /Users/maning/Code/chat/server/main.cpp",
+  "file": "/Users/maning/Code/chat/server/main.cpp"
+},
+{
+  "directory": "/Users/maning/Code/chat/server/build",
+  "command": "/usr/bin/clang++    -lprotobuf -g   -std=gnu++14 -o CMakeFiles/server.dir/account.cpp.o -c /Users/maning/Code/chat/server/account.cpp",
+  "file": "/Users/maning/Code/chat/server/account.cpp"
+},
+{
+  "directory": "/Users/maning/Code/chat/server/build",
+  "command": "/usr/bin/clang++    -lprotobuf -g   -std=gnu++14 -o CMakeFiles/server.dir/msgsvr.cpp.o -c /Users/maning/Code/chat/server/msgsvr.cpp",
+  "file": "/Users/maning/Code/chat/server/msgsvr.cpp"
+},
+{
+  "directory": "/Users/maning/Code/chat/server/build",
+  "command": "/usr/bin/clang++    -lprotobuf -g   -std=gnu++14 -o CMakeFiles/server.dir/protomsg.pb.cc.o -c /Users/maning/Code/chat/server/protomsg.pb.cc",
+  "file": "/Users/maning/Code/chat/server/protomsg.pb.cc"
+}
+]

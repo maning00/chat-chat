@@ -1,0 +1,3 @@
+/Users/maning/Code/chat/server/build/CMakeFiles/rebuild_cache.dir
+/Users/maning/Code/chat/server/build/CMakeFiles/edit_cache.dir
+/Users/maning/Code/chat/server/build/CMakeFiles/server.dir
