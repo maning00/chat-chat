@@ -1,0 +1,17 @@
+[
+{
+  "directory": "/Users/maning/Code/client/build",
+  "command": "/usr/bin/clang++    -lncurses -lmenu -lpanel -lprotobuf -g   -std=gnu++14 -o CMakeFiles/client.dir/main.cpp.o -c /Users/maning/Code/client/main.cpp",
+  "file": "/Users/maning/Code/client/main.cpp"
+},
+{
+  "directory": "/Users/maning/Code/client/build",
+  "command": "/usr/bin/clang++    -lncurses -lmenu -lpanel -lprotobuf -g   -std=gnu++14 -o CMakeFiles/client.dir/clt.cpp.o -c /Users/maning/Code/client/clt.cpp",
+  "file": "/Users/maning/Code/client/clt.cpp"
+},
+{
+  "directory": "/Users/maning/Code/client/build",
+  "command": "/usr/bin/clang++    -lncurses -lmenu -lpanel -lprotobuf -g   -std=gnu++14 -o CMakeFiles/client.dir/protomsg.pb.cc.o -c /Users/maning/Code/client/protomsg.pb.cc",
+  "file": "/Users/maning/Code/client/protomsg.pb.cc"
+}
+]
