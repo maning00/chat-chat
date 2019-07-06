@@ -18,10 +18,7 @@ int main()
 {
     initscr(); start_color(); cbreak(); noecho(); keypad(stdscr, TRUE);
     client clt=client();
-    if(int fd=clt.connectosvr("127.0.0.1", 5019)>0) {
-        clt.set_serversock(fd);
-        clt.Init_ChatUI();
-    }
+    clt.connectosvr("127.0.0.1", 5019);
     return 0;
 }
 

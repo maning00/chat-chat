@@ -81,3 +81,12 @@
         mlock.unlock();
         return size;
     }
+
+    template <typename T>
+    bool SharedQueue<T>::empty()
+    {
+        std::unique_lock<std::mutex> mlock(mutex_);
+        bool empty = queue_.empty();
+        mlock.unlock();
+        return empty;
+    }

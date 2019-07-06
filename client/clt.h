@@ -35,13 +35,13 @@
 
 message Proto_msg{
         int32 flag=1;      //1为发送登陆验证，2为发送给客户端,3为请求好友列表，询问是否在线
-        int32 towhom=2;   //接受者
+        string towhom=2;   //接受者
         string info=3;
 };
 
-
+客户端发送：
 explian                 flag                         toWhom                    info
-登陆验证                   1                       1成功 0失败/下线                  NULL
+登陆验证                   1                           用户名                     密码
 请求在线用户列表            2
 发给其他用户                3
 

@@ -8,12 +8,11 @@
 
 
 #include "clt.h"
-#define PWDSIZE 10
+#define PWDSIZE 20
 #define ARRAY_SIZE(a)(sizeof(a) / sizeof(a[0]))
-mutex rmtx,smtx;
+
 static void *Send_Thread(client& clt);
 static void *Recv_Thread(client& clt);
-static void *Data_handle(client& clt);
 char *choices[] = {
         "Choice 1",
         "Choice 2",
@@ -42,7 +41,7 @@ client::client()
     //SharedQueue<Proto_msg> snd;
     //SharedQueue<Proto_msg> rcv;
     auto *na = new std::vector<my_friend>();
-    
+    online_status = false;
     //recv_queue = rcv;
     //send_queue = snd;
     friends=*na;
@@ -71,12 +70,14 @@ int client::connectosvr(char *ipadd, int port)
         endwin();
         return -1;
     }
-    //printw("connected");
-    char buf[10];
-    //recv(sockfd,buf,PWDSIZE*sizeof(char),0);
-    //printw("%s\n",buf);
     char b[]="Press any key to continue";
     print_in_middle(NULL, 0, 0, 0, b, COLOR_BLUE);
+    thread t[2];
+    t[0]=thread(Send_Thread,ref(*this));
+    t[0].join();
+    t[1]=thread(Recv_Thread,ref(*this));
+    t[1].join();
+    power=TRUE;
     refresh();
     getch();
     clear();
@@ -96,37 +97,30 @@ int client::connectosvr(char *ipadd, int port)
     attroff(A_BOLD);
     //getstr(passwd);
     scanw("%s",passwd);
-    send(sockfd,usrnumb,10*sizeof(char),0);
-    send(sockfd,passwd,10*sizeof(char),0);
-    char buf1[BUFFSIZE];
+    string username = usrnumb;
+    string password = passwd;
     Proto_msg ident;
-    memset(&buf1, 0, BUFFSIZE*sizeof(char));
-    sleep(1);
-    recv(sockfd,buf1, sizeof(buf1),0);
-    ident.ParseFromArray(buf1,BUFFSIZE);
-    string towhom = ident.towhom();
-    if(ident.flag()==LOGIN_FLAG && atoi(towhom.c_str())==1) //登陆成功
-        return sockfd;
-    //printf("buf1 is %s \n",buf1);
-    //printf("didn't get\n");
-    return -1;
+    ident.set_flag(1);
+    ident.set_towhom(username);
+    ident.set_info(password);
+    Send(ident);
+    login();
+    return 1;
 
 }
 
 void client::login()
 {
-    thread t[3];
-    t[0]=thread(Send_Thread,ref(*this));
-    t[1]=thread(Recv_Thread,ref(*this));
-    t[2]=thread(Data_handle,ref(*this));
-    power=TRUE;
+    while(!online_status)
+    {
+        usleep(10000);
+    }
+    Init_ChatUI();
 
 }
 
 void client::Send(Proto_msg &msg) {
-    smtx.lock();
     send_queue.push_back(msg);
-    smtx.unlock();
 }
 
 void client::Receive(Proto_msg &msg) {
@@ -381,18 +375,16 @@ static void *Send_Thread(client& clt)
 {
     while (clt.power)
     {
-        if(clt.send_queue.size()!=0)
+        if(!clt.send_queue.empty())
         {
-            while(!smtx.try_lock()){usleep(100000);}
             Proto_msg presend=clt.send_queue.front();
-            clt.send_queue.pop_front();
-            smtx.unlock();
             char buff[BUFFSIZE];
             presend.SerializePartialToArray(buff,BUFFSIZE);
             if(send(clt.serversock,buff,strlen(buff),0) < 0)
             {
                 clt.Print_Prompt("send failed...");
             }
+            clt.send_queue.pop_front();
         }
     }
     pthread_exit(nullptr);
@@ -406,9 +398,7 @@ static void *Recv_Thread(client& clt)
         if (recv(clt.serversock, buf1, sizeof(buf1), 0) < 0)
             clt.Print_Prompt("Receive failed...");
         recv_msg.ParseFromArray(buf1, BUFFSIZE);
-        while (!rmtx.try_lock()) { usleep(100000); }
-        clt.recv_queue.push_back(recv_msg);
-        rmtx.unlock();
+        clt.Client_driver(recv_msg);
     }
     pthread_exit(nullptr);
 }
@@ -419,7 +409,7 @@ static void *Data_handle(client& clt)
         
         Proto_msg data = clt.recv_queue.front();
         clt.recv_queue.pop_front();
-        clt.Client_driver(data);
+        
         
     }
     pthread_exit(nullptr);

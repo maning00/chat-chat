@@ -20,22 +20,46 @@ using namespace std;
 using namespace protomsg::protobuf;
 const int BUFFSIZE = 128;
 typedef void * (*THREADFUNCPTR)(void *);
+
+/*
+
+message Proto_msg{
+        int32 flag=1;      //1为发送登陆验证，2为发送给客户端,3为请求好友列表，询问是否在线
+        string towhom=2;   //接受者
+        string info=3;
+};
+
+服务端发送：
+explian                 flag                         toWhom                    info
+登陆验证回应               1                          usrname                 1成功 0失败
+请求在线用户列表            2                          usrname              #[用户名位数]#用户名#[用户名位数]#用户名\
+用户间文字消息              3                          usrname               #[消息位数]#消息\
+错误消息                   4                          usrname                 消息内容    
+
+
+ */
+
 class msgsvr{
     public:
     void Init();
     ~msgsvr() {delete &onlinelst;delete &acclist;};
     int bindipport(char *ip,int port);  //bind ip and port  return sockfd
     int acpt(int sockfd);        //accept connections
-    int identfy(int nsock);    //identify user,illegal return nsock, not illegal return -1
+    int identfy(string name,string passwd);    //identify user,illegal return nsock, not illegal return -1
     void Send(Proto_msg &msg);
-    void Receive(Proto_msg &msg);
     void login(onlineuser *usr);
     void logoff(std::string usrnum);
+    int findOnlineusr(string nnam){return onlinelst.findusr(nnam);}
     OnlineUsr_List GetOL_List(){return onlinelst;}
     accountList GetACC_List(){return acclist;}
+    void Message_Driver(Proto_msg &msg);
     bool power;
-    vector<Proto_msg> send_queue;
-    vector<Proto_msg> recv_queue;
+    
+    enum Flag{
+        Login =1,
+        GetOL=2,
+        Chat_text=3
+    };
     
 
 

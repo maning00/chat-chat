@@ -13,10 +13,9 @@
 
 const int PWDSIZE=10;
 const int client_number=6;
-static void *Data_rcv(int& sockf,msgsvr& svr);
-static void *Data_snd(int& sockf,msgsvr& svr);
-static void *Data_handle(int& sockf,msgsvr& svr);
-mutex rmtx,wmtx;
+SharedQueue<Proto_msg> send_queue;
+static void *Data_snd(msgsvr& svr);    //一个发送线程处理所有发送
+static void *Data_Handle(int& sockf,msgsvr& svr);   /* 一个客户端对应一个处理线程（收数据、处理数据） */
 
 void msgsvr::Init(){
     printf("Welcome!\n");
@@ -24,10 +23,7 @@ void msgsvr::Init(){
     acclist=aclist;
     OnlineUsr_List onli =OnlineUsr_List();
     onlinelst = onli;
-    vector<Proto_msg> sq;
-    vector<Proto_msg> rq;
-    send_queue=sq;
-    recv_queue=rq;
+    
     printf("Please Input IP address to bind:  ");
     char ipadd[12]="127.0.0.1";
     //scanf("%s",ipadd);
@@ -77,7 +73,9 @@ int msgsvr::bindipport(char *ip, int port)
 int msgsvr::acpt(int sockfd) //accept connection
 {
     int nsock=-1,i=0;
-    std::thread t[client_number];
+    thread t[client_number];
+    thread snd_t=thread(Data_snd,ref(*this));
+    snd_t.join();
     while(power)
     {
         printf("waiting for new connection...\n");
@@ -86,106 +84,62 @@ int msgsvr::acpt(int sockfd) //accept connection
         socklen_t len=sizeof(struct sockaddr);
         struct sockaddr_in peer_addr;
         //Block here. Until server accpets a new connection.
-        nsock=accept(sockfd,(struct sockaddr *)&peer_addr,&len);
+        nsock=accept(sockfd,(struct sockaddr *)&peer_addr,&len); //接受，获得新sockfd
         if(nsock == -1)
         {
             fprintf(stderr,"Accept error!\n");
             continue;                               //ignore current socket ,continue while loop.
         }
         printf("A new connection occurs!,sockfd is %d\n",nsock);
-        t[i]=std::thread(Data_rcv,std::ref(nsock),std::ref(*this));
+        t[i]=std::thread(Data_Handle,std::ref(nsock),std::ref(*this));
+        t[i].join();
         i++;
-        //char bufff[]="isenconne";
-        //send(nsock,bufff,PWDSIZE*sizeof(char),0);
-            //printf("send \n");
-        //void (msgsvr::*func)(int&);
-        //func = &msgsvr::Data_handle;
-        //if(identfy(nsock)!=-1)
-        //{
-            
-            /*if(pthread_create(&thread_id,NULL,Data_handle,(void *)(&nsock)) == -1){
-            fprintf(stderr,"pthread_create error!\n");
-            break;                             //break while loop
-        }*/
-       // }
-        //else
-            //close(nsock);
     }
     
         return nsock;
 }
 
-int msgsvr::identfy(int nsock)//check user, return usernumber
+int msgsvr::identfy(string name,string passwd,int sockfd)//check user, return usernumber
 {
-    std::string namebuf;
-    //char buf1[]="hello,Welcome to chat\n";
-    //int Send = send(nsock, buf1, sizeof(buf1) , 0);
-    //printf("buf1 sent");
-    //if(Send == -1){
-    //    perror("send failed");
-     //   return -1;
-    //}
-    char recvBuf[PWDSIZE];
-    
-    memset(recvBuf, 0, sizeof(recvBuf));
-    //      //接收数据
-    
-    recv(nsock, recvBuf, PWDSIZE*sizeof(char), 0);  //Receive user's name;
-    //printf("imhere");
-    namebuf=recvBuf;
-    cout<<"namebuf is "<<namebuf<<endl;
-    memset(recvBuf, 0, PWDSIZE*sizeof(char));
-    recv(nsock, recvBuf, PWDSIZE*sizeof(char), 0);  //receive password
-    printf("pass %s",recvBuf);
-    User *oneusr=acclist.findusr(namebuf);
-    std::string s1=recvBuf;
+    User *oneusr=acclist.findusr(name);
     Proto_msg ident;
 
     if(oneusr !=nullptr)
     {
-        if(acclist.isLegal(namebuf, s1))  //whether it's right or not
+        if(acclist.isLegal(name, passwd))  //whether it's right or not
         {
-            this->onlinelst.addusr(namebuf,nsock);//login(namebuf, nsock);
+            onlinelst.addusr(name,sockfd);//login(namebuf, nsock);
             oneusr->set_status(1);
-            cout<<namebuf<<" log in,recvbuf is"<<recvBuf<<endl;
-            ident.set_flag(1);
-            ident.set_towhom("1");
+            cout<<name<<" log in,recvbuf is"<<passwd<<endl;
+            ident.set_flag(1);   //response
+            ident.set_towhom(name);
+            ident.set_info("1");
             Send(ident);
-            return nsock;
+            return sockfd;
         }
     }
     else if (oneusr== nullptr)
     {
-        std::string passwd = recvBuf;
-        User *nusr=acclist.Registration(namebuf,passwd);  //regist new user
+        User *nusr=acclist.Registration(name,passwd);  //regist new user
         nusr->set_status(1);
-        this->onlinelst.addusr(namebuf,nsock);
+        onlinelst.addusr(name,sockfd);
         //login(namebuf, nsock);
-        cout<<namebuf<<" registed,recvbuf is"<<recvBuf<<endl;
+        cout<<name<<" registed,recvbuf is"<<passwd<<endl;
         //int a=acclist.empty();
         //printf("\n%d\n",a);
         //int cc=1;
         ident.set_flag(1);
-        ident.set_towhom("1");
-        char buff[BUFFSIZE];
-        ident.SerializePartialToArray(buff,BUFFSIZE);
-        if(send(nsock,buff,strlen(buff),0) < 0)
-        {
-            cout<<": send failed ..."<<endl;
-        }
+        ident.set_towhom(name);
+        ident.set_info("1");
         Send(ident);
-        return nsock;
+        return sockfd;
     }
         return -1;
 }
 
-/* void msgsvr::Send(Proto_msg &msg) {
-    send_queue.insert(msg);
+void msgsvr::Send(Proto_msg &msg) {
+    send_queue.push_back(msg);
 }
-
-void msgsvr::Receive(Proto_msg &msg) {
-    recv_queue.insert(msg);
-}*/
 
 void msgsvr::login(onlineuser *usr)
 {
@@ -200,23 +154,70 @@ void msgsvr::logoff(std::string usrnum)
     onlinelst.removusr(onlinelst.findusrbysock(sock));
 }
 
-/* 
-static void *Data_rcv(int& sockf,msgsvr& svr)
+void msgsvr::Message_Driver(Proto_msg &msg,int sockfd)     //对收取的消息进行处理
 {
+    int f = msg.flag();
+    switch(f)
+    {
+        case 1:
+        {
+            string ume=msg.towhom();
+            string password=msg.info();
+            identfy(ume,password,sockfd);
+            break;
+        }
+        default:
+        {
+            msg.set_flag(4);
+            cout<<"Got an Unknown message: they are"<<endl<<msg.flag()<<msg.towhom()<<msg.info();
+            break;
+        }
+    }
+    
+}
+
+
+static void *Data_snd(msgsvr& svr)
+{
+    while (svr.power)
+    {
+        if(!send_queue.empty())
+        {
+            Proto_msg presend=send_queue.front();
+            string toWhom = presend.towhom();
+            int sockf = svr.findOnlineusr(toWhom);
+            char buff[BUFFSIZE];
+            presend.SerializePartialToArray(buff,BUFFSIZE);
+            if(send(sockf,buff,strlen(buff),0) < 0)
+            {
+                cout<<"send to"<<svr.GetOL_List().findusrbysock(sockf)<<"failed..."<<endl;
+            }
+            send_queue.pop_front();
+        }
+    }
+    pthread_exit(nullptr);
+}
+
+
+static void *Data_Handle(int& sockf,msgsvr& svr)  /*一个客户端对应一个处理线程 接收然后处理 */
+{
+
     while(svr.power) {
         Proto_msg recv_msg;
         char buf1[BUFFSIZE];
         memset(&buf1, 0, BUFFSIZE * sizeof(char));
         if (recv(sockf, buf1, sizeof(buf1), 0) < 0)
             cout<<"Receive from "<<svr.GetOL_List().findusrbysock(sockf)<<"failed..."<<endl;
+        else
+        {
         recv_msg.ParseFromArray(buf1, BUFFSIZE);
-        while (!rmtx.try_lock()) { usleep(100000); }
-        svr.recv_queue.insert(recv_msg);
-        rmtx.unlock();
+        svr.Message_Driver(recv_msg,sockf);
+        }
     }
     pthread_exit(nullptr);
 }
-*/
+
+
 /*
 
 {
