@@ -70,6 +70,7 @@ int client::connectosvr(char *ipadd, int port)
         endwin();
         return -1;
     }
+    set_serversock(sockfd);
     char b[]="Press any key to continue";
     print_in_middle(NULL, 0, 0, 0, b, COLOR_BLUE);
     thread t[2];

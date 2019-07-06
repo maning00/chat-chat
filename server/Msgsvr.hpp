@@ -45,14 +45,14 @@ class msgsvr{
     ~msgsvr() {delete &onlinelst;delete &acclist;};
     int bindipport(char *ip,int port);  //bind ip and port  return sockfd
     int acpt(int sockfd);        //accept connections
-    int identfy(string name,string passwd);    //identify user,illegal return nsock, not illegal return -1
+    int identfy(string name,string passwd,int sockfd);    //identify user,illegal return nsock, not illegal return -1
     void Send(Proto_msg &msg);
     void login(onlineuser *usr);
     void logoff(std::string usrnum);
     int findOnlineusr(string nnam){return onlinelst.findusr(nnam);}
     OnlineUsr_List GetOL_List(){return onlinelst;}
     accountList GetACC_List(){return acclist;}
-    void Message_Driver(Proto_msg &msg);
+    void Message_Driver(Proto_msg &msg,int sockfd);
     bool power;
     
     enum Flag{
