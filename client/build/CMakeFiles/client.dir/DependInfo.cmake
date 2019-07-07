@@ -4,9 +4,9 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/Users/maning/Code/client/clt.cpp" "/Users/maning/Code/client/build/CMakeFiles/client.dir/clt.cpp.o"
-  "/Users/maning/Code/client/main.cpp" "/Users/maning/Code/client/build/CMakeFiles/client.dir/main.cpp.o"
-  "/Users/maning/Code/client/protomsg.pb.cc" "/Users/maning/Code/client/build/CMakeFiles/client.dir/protomsg.pb.cc.o"
+  "/Users/maning/Code/chat/client/clt.cpp" "/Users/maning/Code/chat/client/build/CMakeFiles/client.dir/clt.cpp.o"
+  "/Users/maning/Code/chat/client/main.cpp" "/Users/maning/Code/chat/client/build/CMakeFiles/client.dir/main.cpp.o"
+  "/Users/maning/Code/chat/client/protomsg.pb.cc" "/Users/maning/Code/chat/client/build/CMakeFiles/client.dir/protomsg.pb.cc.o"
   )
 set(CMAKE_CXX_COMPILER_ID "AppleClang")
 

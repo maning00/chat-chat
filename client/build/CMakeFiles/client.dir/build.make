@@ -43,10 +43,10 @@ RM = /usr/local/Cellar/cmake/3.14.1/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /Users/maning/Code/client
+CMAKE_SOURCE_DIR = /Users/maning/Code/chat/client
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /Users/maning/Code/client/build
+CMAKE_BINARY_DIR = /Users/maning/Code/chat/client/build
 
 # Include any dependencies generated for this target.
 include CMakeFiles/client.dir/depend.make
@@ -59,42 +59,42 @@ include CMakeFiles/client.dir/flags.make
 
 CMakeFiles/client.dir/main.cpp.o: CMakeFiles/client.dir/flags.make
 CMakeFiles/client.dir/main.cpp.o: ../main.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/maning/Code/client/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/client.dir/main.cpp.o"
-	/usr/bin/clang++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/client.dir/main.cpp.o -c /Users/maning/Code/client/main.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/maning/Code/chat/client/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/client.dir/main.cpp.o"
+	/usr/bin/clang++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/client.dir/main.cpp.o -c /Users/maning/Code/chat/client/main.cpp
 
 CMakeFiles/client.dir/main.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/client.dir/main.cpp.i"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/maning/Code/client/main.cpp > CMakeFiles/client.dir/main.cpp.i
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/maning/Code/chat/client/main.cpp > CMakeFiles/client.dir/main.cpp.i
 
 CMakeFiles/client.dir/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/client.dir/main.cpp.s"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/maning/Code/client/main.cpp -o CMakeFiles/client.dir/main.cpp.s
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/maning/Code/chat/client/main.cpp -o CMakeFiles/client.dir/main.cpp.s
 
 CMakeFiles/client.dir/clt.cpp.o: CMakeFiles/client.dir/flags.make
 CMakeFiles/client.dir/clt.cpp.o: ../clt.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/maning/Code/client/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/client.dir/clt.cpp.o"
-	/usr/bin/clang++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/client.dir/clt.cpp.o -c /Users/maning/Code/client/clt.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/maning/Code/chat/client/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/client.dir/clt.cpp.o"
+	/usr/bin/clang++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/client.dir/clt.cpp.o -c /Users/maning/Code/chat/client/clt.cpp
 
 CMakeFiles/client.dir/clt.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/client.dir/clt.cpp.i"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/maning/Code/client/clt.cpp > CMakeFiles/client.dir/clt.cpp.i
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/maning/Code/chat/client/clt.cpp > CMakeFiles/client.dir/clt.cpp.i
 
 CMakeFiles/client.dir/clt.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/client.dir/clt.cpp.s"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/maning/Code/client/clt.cpp -o CMakeFiles/client.dir/clt.cpp.s
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/maning/Code/chat/client/clt.cpp -o CMakeFiles/client.dir/clt.cpp.s
 
 CMakeFiles/client.dir/protomsg.pb.cc.o: CMakeFiles/client.dir/flags.make
 CMakeFiles/client.dir/protomsg.pb.cc.o: ../protomsg.pb.cc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/maning/Code/client/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/client.dir/protomsg.pb.cc.o"
-	/usr/bin/clang++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/client.dir/protomsg.pb.cc.o -c /Users/maning/Code/client/protomsg.pb.cc
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/maning/Code/chat/client/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/client.dir/protomsg.pb.cc.o"
+	/usr/bin/clang++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/client.dir/protomsg.pb.cc.o -c /Users/maning/Code/chat/client/protomsg.pb.cc
 
 CMakeFiles/client.dir/protomsg.pb.cc.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/client.dir/protomsg.pb.cc.i"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/maning/Code/client/protomsg.pb.cc > CMakeFiles/client.dir/protomsg.pb.cc.i
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/maning/Code/chat/client/protomsg.pb.cc > CMakeFiles/client.dir/protomsg.pb.cc.i
 
 CMakeFiles/client.dir/protomsg.pb.cc.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/client.dir/protomsg.pb.cc.s"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/maning/Code/client/protomsg.pb.cc -o CMakeFiles/client.dir/protomsg.pb.cc.s
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/maning/Code/chat/client/protomsg.pb.cc -o CMakeFiles/client.dir/protomsg.pb.cc.s
 
 # Object files for target client
 client_OBJECTS = \
@@ -110,7 +110,7 @@ client: CMakeFiles/client.dir/clt.cpp.o
 client: CMakeFiles/client.dir/protomsg.pb.cc.o
 client: CMakeFiles/client.dir/build.make
 client: CMakeFiles/client.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/maning/Code/client/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX executable client"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/maning/Code/chat/client/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX executable client"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/client.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -123,6 +123,6 @@ CMakeFiles/client.dir/clean:
 .PHONY : CMakeFiles/client.dir/clean
 
 CMakeFiles/client.dir/depend:
-	cd /Users/maning/Code/client/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /Users/maning/Code/client /Users/maning/Code/client /Users/maning/Code/client/build /Users/maning/Code/client/build /Users/maning/Code/client/build/CMakeFiles/client.dir/DependInfo.cmake --color=$(COLOR)
+	cd /Users/maning/Code/chat/client/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /Users/maning/Code/chat/client /Users/maning/Code/chat/client /Users/maning/Code/chat/client/build /Users/maning/Code/chat/client/build /Users/maning/Code/chat/client/build/CMakeFiles/client.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/client.dir/depend
 
