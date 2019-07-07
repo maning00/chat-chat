@@ -75,7 +75,7 @@ int msgsvr::acpt(int sockfd) //accept connection
     int nsock=-1,i=0;
     thread t[client_number];
     thread snd_t=thread(Data_snd,ref(*this));
-    snd_t.join();
+    //snd_t.join();
     while(power)
     {
         printf("waiting for new connection...\n");
@@ -92,7 +92,7 @@ int msgsvr::acpt(int sockfd) //accept connection
         }
         printf("A new connection occurs!,sockfd is %d\n",nsock);
         t[i]=std::thread(Data_Handle,std::ref(nsock),std::ref(*this));
-        t[i].join();
+        //t[i].join();
         i++;
     }
     
@@ -111,7 +111,7 @@ int msgsvr::identfy(string name,string passwd,int sockfd)//check user, return us
             onlinelst.addusr(name,sockfd);//login(namebuf, nsock);
             oneusr->set_status(1);
             cout<<name<<" log in,recvbuf is"<<passwd<<endl;
-            ident.set_flag(1);   //response
+            ident.set_flag(LOGIN_FLAG);   //response
             ident.set_towhom(name);
             ident.set_info("1");
             Send(ident);
@@ -128,7 +128,7 @@ int msgsvr::identfy(string name,string passwd,int sockfd)//check user, return us
         //int a=acclist.empty();
         //printf("\n%d\n",a);
         //int cc=1;
-        ident.set_flag(1);
+        ident.set_flag(LOGIN_FLAG);
         ident.set_towhom(name);
         ident.set_info("1");
         Send(ident);
@@ -139,6 +139,7 @@ int msgsvr::identfy(string name,string passwd,int sockfd)//check user, return us
 
 void msgsvr::Send(Proto_msg &msg) {
     send_queue.push_back(msg);
+    //cout<<"push_back "<<msg.flag()<<endl<<msg.towhom()<<endl<<msg.info()<<endl;
 }
 
 void msgsvr::login(onlineuser *usr)
@@ -154,21 +155,53 @@ void msgsvr::logoff(std::string usrnum)
     onlinelst.removusr(onlinelst.findusrbysock(sock));
 }
 
+void msgsvr::Online_list_Response(string receiver)
+{
+    string message;
+    vector<onlineuser> list=onlinelst.Getolusr();
+    if(list.size()>0)
+    {
+    while (list.size()>0) {
+        message+=list.back().Encode_ol_list();
+        list.pop_back();
+    }
+    message+="#";
+    }
+    else
+        message+="#";
+    /*string message ="06maning07lizixun11james click#";*/
+    Proto_msg forsnd;
+    forsnd.set_flag(GETOL_FLAG);
+    forsnd.set_towhom(receiver);
+    forsnd.set_info(message);
+    Send(forsnd);
+}
+
 void msgsvr::Message_Driver(Proto_msg &msg,int sockfd)     //对收取的消息进行处理
 {
     int f = msg.flag();
+    string twhm = msg.towhom();
+    string info = msg.info();
     switch(f)
     {
-        case 1:
+        case LOGIN_FLAG:
         {
-            string ume=msg.towhom();
-            string password=msg.info();
-            identfy(ume,password,sockfd);
+            //string ume=msg.towhom();
+            //string password=msg.info();
+            identfy(twhm,info,sockfd);
             break;
+        }
+        case GETOL_FLAG:
+        {
+            Online_list_Response(twhm);
+        }
+        case CHAT_TEXT_FLAG:
+        {
+            Send(msg);
         }
         default:
         {
-            msg.set_flag(4);
+            msg.set_flag(ERR_UNKNOWN_FLAG);
             cout<<"Got an Unknown message: they are"<<endl<<msg.flag()<<msg.towhom()<<msg.info();
             break;
         }
@@ -183,16 +216,26 @@ static void *Data_snd(msgsvr& svr)
     {
         if(!send_queue.empty())
         {
+            if(!svr.power)
+                break;
             Proto_msg presend=send_queue.front();
             string toWhom = presend.towhom();
-            int sockf = svr.findOnlineusr(toWhom);
+            int sockf = svr.findOnlineusr(toWhom);//通过towhom判断发给谁
             char buff[BUFFSIZE];
             presend.SerializePartialToArray(buff,BUFFSIZE);
+            cout<<"prepare to send, presend is "<<presend.flag()<<endl<<presend.towhom()<<endl<<presend.info()<<endl;
             if(send(sockf,buff,strlen(buff),0) < 0)
             {
                 cout<<"send to"<<svr.GetOL_List().findusrbysock(sockf)<<"failed..."<<endl;
             }
+            cout<<"sent"<<endl;
             send_queue.pop_front();
+            
+        }
+        else
+        {
+            usleep(100000);
+            //cout<<"im sleeping"<<endl;
         }
     }
     pthread_exit(nullptr);
@@ -203,6 +246,7 @@ static void *Data_Handle(int& sockf,msgsvr& svr)  /*一个客户端对应一个�
 {
 
     while(svr.power) {
+        sleep(1);
         Proto_msg recv_msg;
         char buf1[BUFFSIZE];
         memset(&buf1, 0, BUFFSIZE * sizeof(char));
@@ -211,6 +255,7 @@ static void *Data_Handle(int& sockf,msgsvr& svr)  /*一个客户端对应一个�
         else
         {
         recv_msg.ParseFromArray(buf1, BUFFSIZE);
+            //cout<<"imhere"<<endl;
         svr.Message_Driver(recv_msg,sockf);
         }
     }

@@ -9,6 +9,7 @@
 #include <sstream>
 #include <iostream>
 //#define PWDSIZE 20
+using namespace std;
 class my_friend
 {
 public:
@@ -51,8 +52,9 @@ class accountList
 class onlineuser{   //在线用户名称及sockfd
 public:
     explicit onlineuser(std::string accnum,int sock);
-    ~onlineuser() {delete(&name);}
+    ~onlineuser() {};
     bool operator==(const onlineuser &usrr){if (this->name==usrr.name) return true; else return false;} //compare name;
+    std::string Encode_ol_list();
     std::string name;
     int sock;
 };
@@ -63,6 +65,7 @@ class OnlineUsr_List{  //Online User List
     explicit OnlineUsr_List(std::vector<onlineuser> &olst);
     ~OnlineUsr_List() {delete &olusr;};
     void addusr(std::string &accnum,int sock);
+    std::vector<onlineuser> Getolusr(){return olusr;}
     void addusr(onlineuser &usr);
     void removusr(std::string usrnum);
     int findusr(std::string sb);   //return sockfd

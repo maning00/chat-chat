@@ -4,6 +4,7 @@
 #include<sys/types.h>
 #include<sys/socket.h>
 #include<stdio.h>
+#include <cstdio>
 #include<stdlib.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -32,12 +33,18 @@ message Proto_msg{
 服务端发送：
 explian                 flag                         toWhom                    info
 登陆验证回应               1                          usrname                 1成功 0失败
-请求在线用户列表            2                          usrname              #[用户名位数]#用户名#[用户名位数]#用户名\
-用户间文字消息              3                          usrname               #[消息位数]#消息\
+ 在线用户列表回应            2                          usrname              #无人 两位数+用户名#结束
+用户间文字消息              3                         目的用户名             位数+发方用户名#+位数+消息^
 错误消息                   4                          usrname                 消息内容    
 
 
  */
+enum Flag{
+    LOGIN_FLAG =1,
+    GETOL_FLAG=2,
+    CHAT_TEXT_FLAG=3,
+    ERR_UNKNOWN_FLAG=4
+};
 
 class msgsvr{
     public:
@@ -50,16 +57,13 @@ class msgsvr{
     void login(onlineuser *usr);
     void logoff(std::string usrnum);
     int findOnlineusr(string nnam){return onlinelst.findusr(nnam);}
+    void Online_list_Response(string receiver);//receiver是在线列表接收者用户名
     OnlineUsr_List GetOL_List(){return onlinelst;}
     accountList GetACC_List(){return acclist;}
     void Message_Driver(Proto_msg &msg,int sockfd);
     bool power;
     
-    enum Flag{
-        Login =1,
-        GetOL=2,
-        Chat_text=3
-    };
+    
     
 
 

@@ -109,6 +109,34 @@ std::string OnlineUsr_List::findusrbysock(int sockfd)//find user by sockfd
     return nullptr;
 }
 
+std::string onlineuser::Encode_ol_list()
+{
+    //std::string test = "06maning07lizixun11james click";
+    //return test;
+    unsigned long length = name.length();
+    if(length<10)
+    {
+        std::string forsend="0";
+        forsend += std::to_string(length);
+        forsend += name;
+        return forsend;
+    }
+    else if(length==0)
+    {
+        std::string forsend="";
+        return forsend;
+    }
+    else
+    {
+        std::string forsend;
+        string len =to_string(length);
+        forsend.append(len);
+        forsend += name;
+        return forsend;
+    }
+    
+}
+
 onlineuser::onlineuser(std::string accn,int sockfd)
 {
     name=accn;
@@ -127,6 +155,7 @@ bool User::Add_Friend(std::string frid) {
     newfriend.name=frid;
     newfriend.is_online= false;
     Friend_list.push_back(newfriend);
+    return true;
 }
 
 void User::set_status(bool on) {

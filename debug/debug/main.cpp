@@ -1,15 +1,26 @@
 //
 //  main.cpp
-//  debug
+//  chat-client
 //
-//  Created by 马宁 on 2019/7/6.
+//  Created by 马宁 on 2019/6/27.
 //  Copyright © 2019 马宁. All rights reserved.
 //
 
-#include <iostream>
+#include <string.h>
+#include <ncurses.h>
+#include <panel.h>
+#include <stdlib.h>
 
-int main(int argc, const char * argv[]) {
-    // insert code here...
-    std::cout << "Hello, World!\n";
+#include "clt.h"
+
+
+int main()
+{
+    //initscr(); start_color(); cbreak(); noecho(); keypad(stdscr, TRUE);
+    client clt=client();
+    clt.connectosvr("127.0.0.1", 5019);
     return 0;
 }
+
+
+
