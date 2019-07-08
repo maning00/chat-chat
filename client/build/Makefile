@@ -123,6 +123,33 @@ client/fast:
 	$(MAKE) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/build
 .PHONY : client/fast
 
+UI_Control.o: UI_Control.cpp.o
+
+.PHONY : UI_Control.o
+
+# target to build an object file
+UI_Control.cpp.o:
+	$(MAKE) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/UI_Control.cpp.o
+.PHONY : UI_Control.cpp.o
+
+UI_Control.i: UI_Control.cpp.i
+
+.PHONY : UI_Control.i
+
+# target to preprocess a source file
+UI_Control.cpp.i:
+	$(MAKE) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/UI_Control.cpp.i
+.PHONY : UI_Control.cpp.i
+
+UI_Control.s: UI_Control.cpp.s
+
+.PHONY : UI_Control.s
+
+# target to generate assembly for a file
+UI_Control.cpp.s:
+	$(MAKE) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/UI_Control.cpp.s
+.PHONY : UI_Control.cpp.s
+
 clt.o: clt.cpp.o
 
 .PHONY : clt.o
@@ -213,6 +240,9 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
 	@echo "... client"
+	@echo "... UI_Control.o"
+	@echo "... UI_Control.i"
+	@echo "... UI_Control.s"
 	@echo "... clt.o"
 	@echo "... clt.i"
 	@echo "... clt.s"

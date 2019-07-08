@@ -17,14 +17,14 @@ public:
     void init_wins(WINDOW **wins, int n);
     void Print_Prompt(const char* str);
     void Init_ChatUI(vector<string> &choices);
+    void Refresh_Menu();
 
 private:
-/*WINDOW *my_wins[3];
+WINDOW *my_wins[3];
 PANEL *my_panels[3]; 
 PANEL *top;
 ITEM **my_items,**my_items2;
 MENU *my_menu,*my_menu2;
-ITEM *cur_item2;*/
 client core;
 };
 

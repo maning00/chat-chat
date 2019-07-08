@@ -13,5 +13,10 @@
   "directory": "/Users/maning/Code/chat/client/build",
   "command": "/usr/bin/clang++    -lncurses -lmenu -lpanel -lprotobuf -g   -std=gnu++14 -o CMakeFiles/client.dir/protomsg.pb.cc.o -c /Users/maning/Code/chat/client/protomsg.pb.cc",
   "file": "/Users/maning/Code/chat/client/protomsg.pb.cc"
+},
+{
+  "directory": "/Users/maning/Code/chat/client/build",
+  "command": "/usr/bin/clang++    -lncurses -lmenu -lpanel -lprotobuf -g   -std=gnu++14 -o CMakeFiles/client.dir/UI_Control.cpp.o -c /Users/maning/Code/chat/client/UI_Control.cpp",
+  "file": "/Users/maning/Code/chat/client/UI_Control.cpp"
 }
 ]
