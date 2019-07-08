@@ -7,12 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E00377B422D2431A006BC00E /* UI_Control.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E00377AD22D2431A006BC00E /* UI_Control.cpp */; };
+		E00377B522D2431A006BC00E /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E00377B022D2431A006BC00E /* main.cpp */; };
+		E00377B622D2431A006BC00E /* clt.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E00377B122D2431A006BC00E /* clt.cpp */; };
+		E00377B722D2431A006BC00E /* protomsg.pb.cc in Sources */ = {isa = PBXBuildFile; fileRef = E00377B222D2431A006BC00E /* protomsg.pb.cc */; };
+		E00377BC22D24377006BC00E /* libprotobuf-lite.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E0651D7B22D0EDE500CF4B67 /* libprotobuf-lite.a */; };
+		E00377BD22D24377006BC00E /* libprotobuf.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E0651D7A22D0EDE500CF4B67 /* libprotobuf.a */; };
+		E00377BE22D24377006BC00E /* libprotoc.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E0651D7C22D0EDE500CF4B67 /* libprotoc.a */; };
 		E03AE7CE22D0F673006B2274 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E03AE7CD22D0F673006B2274 /* main.cpp */; };
-		E05C49A722D0DB1F00F75F8A /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E05C49A622D0DB1F00F75F8A /* main.cpp */; };
 		E05C49B822D0DC1A00F75F8A /* libncurses.5.4.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E05C49B722D0DC1A00F75F8A /* libncurses.5.4.tbd */; };
 		E05C49BA22D0DC1F00F75F8A /* libpanel.5.4.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E05C49B922D0DC1F00F75F8A /* libpanel.5.4.tbd */; };
-		E0C0D19D22D1BABA00F44974 /* clt.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E0C0D19922D1BABA00F44974 /* clt.cpp */; };
-		E0C0D19E22D1BABA00F44974 /* protomsg.pb.cc in Sources */ = {isa = PBXBuildFile; fileRef = E0C0D19A22D1BABA00F44974 /* protomsg.pb.cc */; };
 		E0E474A022D0F76800C6D6FF /* msgsvr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E0E4749922D0F76800C6D6FF /* msgsvr.cpp */; };
 		E0E474A122D0F76800C6D6FF /* account.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E0E4749A22D0F76800C6D6FF /* account.cpp */; };
 		E0E474A222D0F76800C6D6FF /* protomsg.pb.cc in Sources */ = {isa = PBXBuildFile; fileRef = E0E4749E22D0F76800C6D6FF /* protomsg.pb.cc */; };
@@ -25,6 +29,15 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		E00377A322D242F8006BC00E /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
 		E03AE7C922D0F673006B2274 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -46,6 +59,17 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		E00377A522D242F8006BC00E /* client_debug */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = client_debug; sourceTree = BUILT_PRODUCTS_DIR; };
+		E00377AC22D2431A006BC00E /* SharedQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SharedQueue.h; sourceTree = "<group>"; };
+		E00377AD22D2431A006BC00E /* UI_Control.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UI_Control.cpp; sourceTree = "<group>"; };
+		E00377AE22D2431A006BC00E /* UI_Control.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UI_Control.h; sourceTree = "<group>"; };
+		E00377AF22D2431A006BC00E /* protomsg.pb.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = protomsg.pb.h; sourceTree = "<group>"; };
+		E00377B022D2431A006BC00E /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = ../../../../test/testclient/main.cpp; sourceTree = "<group>"; };
+		E00377B122D2431A006BC00E /* clt.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = clt.cpp; sourceTree = "<group>"; };
+		E00377B222D2431A006BC00E /* protomsg.pb.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = protomsg.pb.cc; sourceTree = "<group>"; };
+		E00377B322D2431A006BC00E /* clt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = clt.h; sourceTree = "<group>"; };
+		E00377B822D2436E006BC00E /* libncurses.5.4.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libncurses.5.4.tbd; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/lib/libncurses.5.4.tbd; sourceTree = DEVELOPER_DIR; };
+		E00377B922D2436E006BC00E /* libpanel.5.4.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libpanel.5.4.tbd; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/lib/libpanel.5.4.tbd; sourceTree = DEVELOPER_DIR; };
 		E03AE7BD22D0F188006B2274 /* libprotobuf.19.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libprotobuf.19.dylib; path = ../../../../../usr/local/lib/libprotobuf.19.dylib; sourceTree = "<group>"; };
 		E03AE7BF22D0F18E006B2274 /* libprotobuf-lite.la */ = {isa = PBXFileReference; lastKnownFileType = text; name = "libprotobuf-lite.la"; path = "../../../../../usr/local/lib/libprotobuf-lite.la"; sourceTree = "<group>"; };
 		E03AE7C222D0F19D006B2274 /* libprotobuf-lite.19.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libprotobuf-lite.19.dylib"; path = "../../../../../usr/local/lib/libprotobuf-lite.19.dylib"; sourceTree = "<group>"; };
@@ -53,7 +77,6 @@
 		E03AE7CB22D0F673006B2274 /* debug2 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = debug2; sourceTree = BUILT_PRODUCTS_DIR; };
 		E03AE7CD22D0F673006B2274 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		E05C49A322D0DB1F00F75F8A /* debug */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = debug; sourceTree = BUILT_PRODUCTS_DIR; };
-		E05C49A622D0DB1F00F75F8A /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		E05C49B522D0DB9900F75F8A /* libproc.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libproc.tbd; path = usr/lib/libproc.tbd; sourceTree = SDKROOT; };
 		E05C49B722D0DC1A00F75F8A /* libncurses.5.4.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libncurses.5.4.tbd; path = usr/lib/libncurses.5.4.tbd; sourceTree = SDKROOT; };
 		E05C49B922D0DC1F00F75F8A /* libpanel.5.4.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libpanel.5.4.tbd; path = usr/lib/libpanel.5.4.tbd; sourceTree = SDKROOT; };
@@ -64,11 +87,7 @@
 		E0651D7A22D0EDE500CF4B67 /* libprotobuf.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libprotobuf.a; path = ../../../../../usr/local/lib/libprotobuf.a; sourceTree = "<group>"; };
 		E0651D7B22D0EDE500CF4B67 /* libprotobuf-lite.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libprotobuf-lite.a"; path = "../../../../../usr/local/lib/libprotobuf-lite.a"; sourceTree = "<group>"; };
 		E0651D7C22D0EDE500CF4B67 /* libprotoc.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libprotoc.a; path = ../../../../../usr/local/lib/libprotoc.a; sourceTree = "<group>"; };
-		E0C0D19822D1BABA00F44974 /* clt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = clt.h; sourceTree = "<group>"; };
-		E0C0D19922D1BABA00F44974 /* clt.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = clt.cpp; sourceTree = "<group>"; };
-		E0C0D19A22D1BABA00F44974 /* protomsg.pb.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = protomsg.pb.cc; sourceTree = "<group>"; };
-		E0C0D19B22D1BABA00F44974 /* protomsg.pb.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = protomsg.pb.h; sourceTree = "<group>"; };
-		E0C0D19C22D1BABA00F44974 /* SharedQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SharedQueue.h; sourceTree = "<group>"; };
+		E0C0D1A022D1C07800F44974 /* libmenu.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libmenu.tbd; path = usr/lib/libmenu.tbd; sourceTree = SDKROOT; };
 		E0E4749922D0F76800C6D6FF /* msgsvr.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = msgsvr.cpp; sourceTree = "<group>"; };
 		E0E4749A22D0F76800C6D6FF /* account.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = account.cpp; sourceTree = "<group>"; };
 		E0E4749B22D0F76800C6D6FF /* account.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = account.hpp; sourceTree = "<group>"; };
@@ -79,6 +98,16 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		E00377A222D242F8006BC00E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E00377BC22D24377006BC00E /* libprotobuf-lite.a in Frameworks */,
+				E00377BD22D24377006BC00E /* libprotobuf.a in Frameworks */,
+				E00377BE22D24377006BC00E /* libprotoc.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E03AE7C822D0F673006B2274 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -104,6 +133,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		E00377A622D242F8006BC00E /* client_debug */ = {
+			isa = PBXGroup;
+			children = (
+				E00377B122D2431A006BC00E /* clt.cpp */,
+				E00377B322D2431A006BC00E /* clt.h */,
+				E00377B022D2431A006BC00E /* main.cpp */,
+				E00377B222D2431A006BC00E /* protomsg.pb.cc */,
+				E00377AF22D2431A006BC00E /* protomsg.pb.h */,
+				E00377AC22D2431A006BC00E /* SharedQueue.h */,
+				E00377AD22D2431A006BC00E /* UI_Control.cpp */,
+				E00377AE22D2431A006BC00E /* UI_Control.h */,
+			);
+			path = client_debug;
+			sourceTree = "<group>";
+		};
 		E03AE7CC22D0F673006B2274 /* debug2 */ = {
 			isa = PBXGroup;
 			children = (
@@ -122,8 +166,8 @@
 		E05C499A22D0DB1F00F75F8A = {
 			isa = PBXGroup;
 			children = (
-				E05C49A522D0DB1F00F75F8A /* debug */,
 				E03AE7CC22D0F673006B2274 /* debug2 */,
+				E00377A622D242F8006BC00E /* client_debug */,
 				E05C49A422D0DB1F00F75F8A /* Products */,
 				E05C49B422D0DB9800F75F8A /* Frameworks */,
 			);
@@ -134,26 +178,17 @@
 			children = (
 				E05C49A322D0DB1F00F75F8A /* debug */,
 				E03AE7CB22D0F673006B2274 /* debug2 */,
+				E00377A522D242F8006BC00E /* client_debug */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		E05C49A522D0DB1F00F75F8A /* debug */ = {
-			isa = PBXGroup;
-			children = (
-				E0C0D19922D1BABA00F44974 /* clt.cpp */,
-				E0C0D19822D1BABA00F44974 /* clt.h */,
-				E0C0D19A22D1BABA00F44974 /* protomsg.pb.cc */,
-				E0C0D19B22D1BABA00F44974 /* protomsg.pb.h */,
-				E0C0D19C22D1BABA00F44974 /* SharedQueue.h */,
-				E05C49A622D0DB1F00F75F8A /* main.cpp */,
-			);
-			path = debug;
 			sourceTree = "<group>";
 		};
 		E05C49B422D0DB9800F75F8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				E00377B822D2436E006BC00E /* libncurses.5.4.tbd */,
+				E00377B922D2436E006BC00E /* libpanel.5.4.tbd */,
+				E0C0D1A022D1C07800F44974 /* libmenu.tbd */,
 				E03AE7C522D0F1AB006B2274 /* libprotobuf.la */,
 				E03AE7C222D0F19D006B2274 /* libprotobuf-lite.19.dylib */,
 				E03AE7BF22D0F18E006B2274 /* libprotobuf-lite.la */,
@@ -175,6 +210,23 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		E00377A422D242F8006BC00E /* client_debug */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E00377A922D242F8006BC00E /* Build configuration list for PBXNativeTarget "client_debug" */;
+			buildPhases = (
+				E00377A122D242F8006BC00E /* Sources */,
+				E00377A222D242F8006BC00E /* Frameworks */,
+				E00377A322D242F8006BC00E /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = client_debug;
+			productName = client_debug;
+			productReference = E00377A522D242F8006BC00E /* client_debug */;
+			productType = "com.apple.product-type.tool";
+		};
 		E03AE7CA22D0F673006B2274 /* debug2 */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = E03AE7CF22D0F673006B2274 /* Build configuration list for PBXNativeTarget "debug2" */;
@@ -218,6 +270,9 @@
 				LastUpgradeCheck = 1020;
 				ORGANIZATIONNAME = "马宁";
 				TargetAttributes = {
+					E00377A422D242F8006BC00E = {
+						CreatedOnToolsVersion = 10.2.1;
+					};
 					E03AE7CA22D0F673006B2274 = {
 						CreatedOnToolsVersion = 10.2.1;
 					};
@@ -240,11 +295,23 @@
 			targets = (
 				E05C49A222D0DB1F00F75F8A /* debug */,
 				E03AE7CA22D0F673006B2274 /* debug2 */,
+				E00377A422D242F8006BC00E /* client_debug */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXSourcesBuildPhase section */
+		E00377A122D242F8006BC00E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E00377B622D2431A006BC00E /* clt.cpp in Sources */,
+				E00377B722D2431A006BC00E /* protomsg.pb.cc in Sources */,
+				E00377B522D2431A006BC00E /* main.cpp in Sources */,
+				E00377B422D2431A006BC00E /* UI_Control.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E03AE7C722D0F673006B2274 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -260,15 +327,32 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E05C49A722D0DB1F00F75F8A /* main.cpp in Sources */,
-				E0C0D19E22D1BABA00F44974 /* protomsg.pb.cc in Sources */,
-				E0C0D19D22D1BABA00F44974 /* clt.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
+		E00377AA22D242F8006BC00E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				HEADER_SEARCH_PATHS = /usr/local/include;
+				LIBRARY_SEARCH_PATHS = /usr/local/lib;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		E00377AB22D242F8006BC00E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				HEADER_SEARCH_PATHS = /usr/local/include;
+				LIBRARY_SEARCH_PATHS = /usr/local/lib;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		E03AE7D022D0F673006B2274 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -429,6 +513,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		E00377A922D242F8006BC00E /* Build configuration list for PBXNativeTarget "client_debug" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E00377AA22D242F8006BC00E /* Debug */,
+				E00377AB22D242F8006BC00E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		E03AE7CF22D0F673006B2274 /* Build configuration list for PBXNativeTarget "debug2" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

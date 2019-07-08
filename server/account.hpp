@@ -19,7 +19,7 @@ public:
 
 class User{
 public:
-    ~User(){delete &name;delete &passwd;};
+    ~User(){};
     explicit User(std::string &nic,std::string &pass);
     bool operator==(const User& usrr);
     bool Add_Friend(std::string frid);
@@ -63,7 +63,7 @@ class OnlineUsr_List{  //Online User List
     public:
     OnlineUsr_List();
     explicit OnlineUsr_List(std::vector<onlineuser> &olst);
-    ~OnlineUsr_List() {delete &olusr;};
+    ~OnlineUsr_List() {};
     void addusr(std::string &accnum,int sock);
     std::vector<onlineuser> Getolusr(){return olusr;}
     void addusr(onlineuser &usr);

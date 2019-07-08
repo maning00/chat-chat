@@ -12,7 +12,7 @@
 #include "account.hpp"
 #include "Msgsvr.hpp"
 
-int main(int argc, const char * argv[]) {
+int main() {
     msgsvr svr;
     svr.Init();
     

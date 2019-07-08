@@ -169,7 +169,7 @@ void msgsvr::Online_list_Response(string receiver)
     }
     else
         message+="#";
-    /*string message ="06maning07lizixun11james click#";*/
+    //string message ="06maning07lizixun11james click#";
     Proto_msg forsnd;
     forsnd.set_flag(GETOL_FLAG);
     forsnd.set_towhom(receiver);
@@ -188,21 +188,26 @@ void msgsvr::Message_Driver(Proto_msg &msg,int sockfd)     //对收取的消息�
         {
             //string ume=msg.towhom();
             //string password=msg.info();
+            if(isLoged_In(twhm))
+                break;
+            else
             identfy(twhm,info,sockfd);
             break;
         }
         case GETOL_FLAG:
         {
             Online_list_Response(twhm);
+            break;
         }
         case CHAT_TEXT_FLAG:
         {
             Send(msg);
+            break;
         }
         default:
         {
-            msg.set_flag(ERR_UNKNOWN_FLAG);
-            cout<<"Got an Unknown message: they are"<<endl<<msg.flag()<<msg.towhom()<<msg.info();
+            //msg.set_flag(ERR_UNKNOWN_FLAG);
+            cout<<"Got an Unknown message: they are"<<endl<<msg.flag()<<endl<<msg.towhom()<<endl<<msg.info()<<endl;
             break;
         }
     }
@@ -219,6 +224,7 @@ static void *Data_snd(msgsvr& svr)
             if(!svr.power)
                 break;
             Proto_msg presend=send_queue.front();
+            send_queue.pop_front();
             string toWhom = presend.towhom();
             int sockf = svr.findOnlineusr(toWhom);//通过towhom判断发给谁
             char buff[BUFFSIZE];
@@ -229,7 +235,7 @@ static void *Data_snd(msgsvr& svr)
                 cout<<"send to"<<svr.GetOL_List().findusrbysock(sockf)<<"failed..."<<endl;
             }
             cout<<"sent"<<endl;
-            send_queue.pop_front();
+            
             
         }
         else
@@ -255,6 +261,7 @@ static void *Data_Handle(int& sockf,msgsvr& svr)  /*一个客户端对应一个�
         else
         {
         recv_msg.ParseFromArray(buf1, BUFFSIZE);
+            cout<<"Received "<<recv_msg.flag()<<endl<<recv_msg.towhom()<<endl<<"and "<<recv_msg.info()<<endl;
             //cout<<"imhere"<<endl;
         svr.Message_Driver(recv_msg,sockf);
         }

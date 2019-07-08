@@ -7,8 +7,7 @@
 //
 
 #include <string.h>
-#include <ncurses.h>
-#include <panel.h>
+#include "UI_Control.h"
 #include <stdlib.h>
 
 #include "clt.h"
@@ -16,9 +15,9 @@
 
 int main()
 {
-    //initscr(); start_color(); cbreak(); noecho(); keypad(stdscr, TRUE);
-    client clt=client();
-    clt.connectosvr("127.0.0.1", 5019);
+
+    UI_Control ui;
+    ui.Init_MainUI();
     return 0;
 }
 

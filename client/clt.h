@@ -25,12 +25,13 @@
 #include <vector>
 #include <thread>
 #include <fstream>
+
 //#include <dirent.h>
 #include <mutex>
 #include <queue>
 #include "SharedQueue.h"
-//#include <menu.h>
-#include <panel.h>
+#include <menu.h>
+
 /*
 
 message Proto_msg{
@@ -53,6 +54,9 @@ const int BUFFSIZE = 128;
 //const int LOGIN_FLAG = 1;
 //const int RQST_ONLINE_FLAG = 2;
 
+
+
+
 const string END_FLAG="^";
 const string NUMBER_FLAG="#";
 enum Flag{
@@ -73,13 +77,9 @@ class client{
 public:
     explicit client();
     int connectosvr(char *ipadd,int port);
-    void login();
-    void print_in_middle(WINDOW *win, int starty, int startx, int width, char *string, chtype color);
-    void init_wins(WINDOW **wins, int n);
-    void Init_ChatUI();
-    char *Reqst_Online_List();
+    int login(string username,string password);
+    void Reqst_Online_List();
     void Client_driver(Proto_msg &msg);
-    void Print_Prompt(const char* str);
     void Decode_OL_List(string mesg);
     void Chat_Text_Handle(Proto_msg &msg);
     bool Add_Friend(std::string frid,bool status);
@@ -92,11 +92,13 @@ public:
     void Setmyname(string nnm){myname = nnm;}
     int serversock;
     bool online_status;
+    bool friends_empty(){ return friends.empty();};
+    vector<string> Get_Friend_List();
     
 private:
     vector<my_friend> friends;
     string myname;
-
+    thread t[2];
 
 };
 

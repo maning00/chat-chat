@@ -71,7 +71,7 @@ int client::connectosvr(char *ipadd, int port)
     power=TRUE;
     set_serversock(sockfd);
     char b[]="Press any key to continue";
-    //print_in_middle(NULL, 0, 0, 0, b, COLOR_BLUE);
+    print_in_middle(NULL, 0, 0, 0, b, COLOR_BLUE);
     thread t[2];
     t[0]=thread(Send_Thread,ref(*this));
     //t[0].join();
@@ -79,20 +79,20 @@ int client::connectosvr(char *ipadd, int port)
     //t[1].join();
 
     refresh();
-    //getch();clear();echo();
+    getch();clear();echo();
     char mseg[]="User Number:";
     char usrnumb[PWDSIZE];
     char msg2[]="Password:";
     char passwd[PWDSIZE];
     int row,col;
-    //getmaxyx(stdscr,row,col);attron(A_BOLD);mvprintw(row/3,(col-strlen(mseg))/2, "%s",mseg);
-    //getstr(usrnumb);scanw("%s",usrnumb);int usrnum=atoi(usrnumb);mvprintw(row/3+2, (col-strlen(mseg))/2, "%s",msg2);attroff(A_BOLD);
-    //getstr(passwd);
-    //scanw("%s",passwd);
-    //string username = usrnumb;
-    //string password = passwd;
-    string username = "maning";
-    string password = "mima";
+    getmaxyx(stdscr,row,col);attron(A_BOLD);mvprintw(row/3,(col-strlen(mseg))/2, "%s",mseg);
+    getstr(usrnumb);scanw("%s",usrnumb);int usrnum=atoi(usrnumb);mvprintw(row/3+2, (col-strlen(mseg))/2, "%s",msg2);attroff(A_BOLD);
+    getstr(passwd);
+    scanw("%s",passwd);
+    string username = usrnumb;
+    string password = passwd;
+    //string username = "maning";
+    //string password = "mima";
     Setmyname(username);
     Proto_msg ident;
     ident.set_flag(LOGIN_FLAG);
@@ -172,7 +172,7 @@ void client::Print_Prompt(const char* str) {
     mvprintw(y-3,3,str);
 }
 
-char *client::Reqst_Online_List()
+void client::Reqst_Online_List()
 {
     Proto_msg rqst;
     rqst.set_flag(GETOL_FLAG);
@@ -182,7 +182,7 @@ char *client::Reqst_Online_List()
 void client::Init_ChatUI()
 {
     cout<< "shit!"<<endl;
-    /*Reqst_Online_List();
+    Reqst_Online_List();
 
     WINDOW *my_wins[3];
 
@@ -326,7 +326,7 @@ void client::Init_ChatUI()
     for(i = 0; i < n_choices2; ++i)
         free_item(my_items2[i]);
     endwin();
-*/
+
 }
 
 void client::print_in_middle(WINDOW *win, int starty, int startx, int width, char *string, chtype color)

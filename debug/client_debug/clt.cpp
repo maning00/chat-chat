@@ -40,7 +40,7 @@ int client::connectosvr(char *ipadd, int port)
     if(connect(sockfd,(struct sockaddr *)&mysock,sizeof(struct sockaddr))==-1)
     {
         perror("connect error");
-        endwin();
+        //endwin();
         return -1;
     }
     power=TRUE;

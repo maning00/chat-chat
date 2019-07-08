@@ -62,6 +62,11 @@ class msgsvr{
     accountList GetACC_List(){return acclist;}
     void Message_Driver(Proto_msg &msg,int sockfd);
     bool power;
+    bool isLoged_In(string name){
+        if(onlinelst.findusr(name)>0)
+            return true;
+        else
+            return false;}
     
     
     
