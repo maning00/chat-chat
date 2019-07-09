@@ -135,6 +135,7 @@ bool client::Add_Friend(std::string frid,bool status) {
     newfriend.name = frid;
     newfriend.is_online = status;
     friends.push_back(newfriend);
+
     return true;
 }
 
@@ -159,10 +160,14 @@ void client::Decode_OL_List(string mesg)
         int len = atoi(mesg.substr(i,2).c_str());
         cout<<"len="<<len<<endl<<"mesg is"<<mesg<<endl;
         i+=2;
-        Add_Friend(mesg.substr(i,len), true);
+        string newfrid=mesg.substr(i,len);
+        if(newfrid!=myname) {
+            Add_Friend(newfrid, true);
+        }
         i+=len;
         strbuf = mesg[i];
     }
+    online_remider = true;
     //swtch=true;
 }
 
@@ -236,11 +241,21 @@ static void *Recv_Thread(client& clt)
     pthread_exit(nullptr);
 }
 
+void client::Exit() {
+    Proto_msg ext;
+    ext.set_flag(EXIT_FLAG);
+    ext.set_towhom(myname);
+    Send(ext);
+    power= false;
+    close(serversock);
+    exit(0);
+}
+
 vector<string> client::Get_Friend_List() {
     if(friends.empty())
     {
         vector<string> loading;
-        string str1="Loading...";
+        string str1="Oops, There's no one";
         loading.push_back(str1);
         return loading;
     }

@@ -44,26 +44,23 @@ message Proto_msg{
 explian                 flag                         toWhom                    info
 登陆验证                   1                           用户名                     密码
 请求在线用户列表            2                           自己的用户名
- 发给其他用户               3                            目的用户名             位数+自己用户名#+位数+消息^
-
-
+发给其他用户               3                            目的用户名             2位数+自己用户名#+2位数+消息^
+错误消息                   4                          usrname                 消息内容
+下线                       5                            自己用户名
  */
 using namespace std;
 using namespace protomsg::protobuf;
 const int BUFFSIZE = 128;
-//const int LOGIN_FLAG = 1;
-//const int RQST_ONLINE_FLAG = 2;
 
 
 
 
-const string END_FLAG="^";
-const string NUMBER_FLAG="#";
 enum Flag{
     LOGIN_FLAG =1,
     GETOL_FLAG=2,
     CHAT_TEXT_FLAG=3,
-    ERR_UNKNOWN_FLAG=4
+    ERR_UNKNOWN_FLAG=4,
+    EXIT_FLAG=5
 };
 
 class my_friend
@@ -92,12 +89,17 @@ public:
     void Setmyname(string nnm){myname = nnm;}
     int serversock;
     bool online_status;
+    void Exit();
     bool friends_empty(){ return friends.empty();};
     vector<string> Get_Friend_List();
+    void Set_Sendto(string &name){sendto = name;}
+    string Get_Sendto(){ return sendto;}
+    bool online_remider;
     
 private:
     vector<my_friend> friends;
     string myname;
+    string sendto;
     thread t[2];
 
 };

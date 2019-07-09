@@ -110,6 +110,13 @@ int msgsvr::identfy(string name,string passwd,int sockfd)//check user, return us
         {
             onlinelst.addusr(name,sockfd);//login(namebuf, nsock);
             oneusr->set_status(1);
+            vector<onlineuser> olllusr=onlinelst.Getolusr();       //获取此时在线列表
+            for(int i=0;i<olllusr.size();i++) {
+                string friend_name = olllusr[i].name;
+                if(friend_name != name) {
+                    Online_list_Response(friend_name);
+                }
+            }
             cout<<name<<" log in,recvbuf is"<<passwd<<endl;
             ident.set_flag(LOGIN_FLAG);   //response
             ident.set_towhom(name);
@@ -123,6 +130,14 @@ int msgsvr::identfy(string name,string passwd,int sockfd)//check user, return us
         User *nusr=acclist.Registration(name,passwd);  //regist new user
         nusr->set_status(1);
         onlinelst.addusr(name,sockfd);
+
+        vector<onlineuser> olllusr=onlinelst.Getolusr();       //获取此时在线列表
+        for(int i=0;i<olllusr.size();i++) {           //通知所有朋友我上线了
+            string friend_name = olllusr[i].name;
+            if(friend_name != name) {
+                Online_list_Response(friend_name);
+            }
+        }
         //login(namebuf, nsock);
         cout<<name<<" registed,recvbuf is"<<passwd<<endl;
         //int a=acclist.empty();

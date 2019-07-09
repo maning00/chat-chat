@@ -1,9 +1,9 @@
 #include"UI_Control.h"
 #define ARRAY_SIZE(a)(sizeof(a) / sizeof(a[0]))
 char *choices2[] = {
-        "Add Friend",
         "Settings",
         "Help",
+        "About",
         "Exit",
         (char *)NULL,
 };
@@ -49,7 +49,7 @@ int UI_Control::Init_MainUI()
 
 int UI_Control::UI_Login()
 {
-    /*clear();
+    clear();
     char mseg[]="User Number:";
     char usrnumb[PWDSIZE];
     char msg2[]="Password:";
@@ -63,9 +63,11 @@ int UI_Control::UI_Login()
     attroff(A_BOLD);
     scanw("%s",passwd);
     string usr = usrnumb;
-    string pass = passwd;*/
-    string usr="maning";
-    string pass = "mima";
+    string pass = passwd;
+    string str="n";     //暂无发送目标
+    core.Set_Sendto(str);
+    //string usr="maning";
+    //string pass = "mima";
     if(core.login(usr,pass)<0) {
         printw("Log in Failed...");
         endwin();
@@ -74,7 +76,7 @@ int UI_Control::UI_Login()
     core.Reqst_Online_List();
     while(core.friends_empty()) {
         sleep(1);
-        if(core.friends_empty()) {
+        /*if(core.friends_empty()) {
             vector<string> loading;
             string str1="Loading...";
             string str2="Loading...";
@@ -88,11 +90,11 @@ int UI_Control::UI_Login()
             break;
         }
         else
-        {
+        {*/
             vector<string> choicess = core.Get_Friend_List();
             Init_ChatUI(choicess);
             break;
-        }
+        //}
     }
 
     return 1;
@@ -100,7 +102,42 @@ int UI_Control::UI_Login()
 
 void func(char *name,UI_Control& ui)
 {
-    mvprintw(20, 0, "Item selected is : %s", name);
+    string selected = name;
+    if(selected == "Help")
+    {
+        clear();
+        int y,x;
+        getmaxyx(stdscr,y,x);
+        init_pair(5,COLOR_WHITE,COLOR_BLACK);
+        char about[] = "Press Tab to switch panel";
+        char abou[]="Press Enter to select";
+        char an[]="Any Question, Contact ningma1997@gmail.com";
+        ui.print_in_middle(stdscr,y/3,x/3, sizeof(about),about,5);
+        ui.print_in_middle(stdscr,y/3+2,x/3+2, sizeof(abou),abou,5);
+        ui.print_in_middle(stdscr,y/2+4,x/3-8, sizeof(an),an,5);
+    }
+    else if(selected=="About")
+    {
+        clear();
+        int y,x;
+        getmaxyx(stdscr,y,x);
+        init_pair(5,COLOR_BLUE,COLOR_BLACK);
+        char about[] = "Copyright© 2019 Ning.M";
+        ui.print_in_middle(stdscr,y/3,x/3, sizeof(about),about,5);
+    }
+    else if(selected == "Exit")
+    {
+        ui.UI_EXIT();
+    }
+    else if (selected ==ui.GetMyName())
+    {
+        wprintw(ui.my_wins[2],"This is me");
+    }
+    else
+    {
+        ui.Set_Sendto(selected);
+    }
+    //mvprintw(20, 0, "Item selected is : %s", name);
 
 }
 
@@ -141,8 +178,9 @@ void UI_Control::init_wins(WINDOW **wins, int n)
 
     for(i=0;i<3;i+=2)
     {
-        int startx, starty, height, width;
-        getmaxyx(*&wins[i], height, width);
+        int  width;
+        width=getmaxx(*&wins[i]);
+        //getmaxyx(*&wins[i], height, width);
         box(*&wins[i], 0, 0);
         mvwaddch(*&wins[i], 2, 0, ACS_LTEE);
         mvwhline(*&wins[i], 2, 1, ACS_HLINE, width - 2);
@@ -155,84 +193,81 @@ void UI_Control::Print_Prompt(const char* str) {
     mvprintw(y-3,3,str);
 }
 
+
 void UI_Control::Init_ChatUI(vector<string> &choices)
 {
+    initscr(); start_color(); cbreak(); echo(); keypad(stdscr, TRUE);
+    ITEM **my_items = new ITEM*;
     clear();
-    cout<<"I'm In!!!!!!!"<<endl;
-    /*int n_choices,n_choices2,i;
+    core.online_remider=false;
+    int n_choices,n_choices2;
     int ch;
     init_pair(1, COLOR_RED, COLOR_BLACK);
     init_pair(2, COLOR_GREEN, COLOR_BLACK);
     init_pair(3, COLOR_BLUE, COLOR_BLACK);
     init_pair(4, COLOR_CYAN, COLOR_BLACK);
 
-    n_choices =choices.size();
-    n_choices2 =ARRAY_SIZE(choices2);
-    my_items = (ITEM **)calloc(n_choices, sizeof(ITEM *));
-    my_items2 = (ITEM **)calloc(n_choices2 + 1, sizeof(ITEM *));
-    for(i = 0; i < n_choices; ++i)
+    init_wins(my_wins, 4);
+    keypad(my_wins[0], TRUE);
+    keypad(my_wins[1], TRUE);
+    my_panels[0] = new_panel(my_wins[0]);
+    my_panels[1] = new_panel(my_wins[1]);
+    my_panels[2] = new_panel(my_wins[2]);
+    set_panel_userptr(my_panels[0], my_panels[1]);
+    set_panel_userptr(my_panels[1], my_panels[2]);
+    set_panel_userptr(my_panels[2], my_panels[0]);
+    update_panels();
+
+    /*更新好友列表*/
+    //unpost_menu(my_menu);
+    //free_menu(my_menu);
+    int n_choices12 =choices.size();
+    my_items = (ITEM **)calloc(n_choices12 + 1, sizeof(ITEM *));
+    int i=0;
+    for(i = 0; i < n_choices12; ++i)
     {
         my_items[i] = new_item(choices[i].c_str(), 0);
         set_item_userptr(my_items[i],(void *)func);
     }
 
+    my_menu = new_menu((ITEM **)my_items);
+    int h1,w1;
+    getmaxyx(my_wins[0],h1,w1);
+    set_menu_sub(my_menu, derwin(my_wins[0], h1-3, w1-3, 3, 2));
+    post_menu(my_menu);
+
+    wrefresh(my_wins[0]);
+    doupdate();
+    /*更新完成*/
+    n_choices2 =ARRAY_SIZE(choices2);
+    my_items2 = (ITEM **)calloc(n_choices2 + 1, sizeof(ITEM *));
     for(i = 0; i < n_choices2; ++i)
     {
         my_items2[i] = new_item(choices2[i], 0);
-     
+
         set_item_userptr(my_items2[i],(void *)func);
-        //void *item_userptr(const ITEM *my_items2[i]);
     }
-    //my_items2[n_choices2] = (ITEM *)NULL;
-    
-    my_menu = new_menu((ITEM **)my_items);
     my_menu2 = new_menu((ITEM **)my_items2);
-    init_wins(my_wins, 4);
-    keypad(my_wins[0], TRUE);
-    keypad(my_wins[1], TRUE);
-    //keypad(my_wins[3], TRUE);
-    
-    my_panels[0] = new_panel(my_wins[0]);
-    my_panels[1] = new_panel(my_wins[1]);
-    my_panels[2] = new_panel(my_wins[2]);
-    //my_panels[3] = new_panel(my_wins[3]);
-    
-   
-    set_panel_userptr(my_panels[0], my_panels[1]);
-    set_panel_userptr(my_panels[1], my_panels[2]);
-    set_panel_userptr(my_panels[2], my_panels[0]);
-    //set_panel_userptr(my_panels[3], my_panels[0]);
-    
-    update_panels();
 
-    int h1,h2,w1,w2;
-    getmaxyx(my_wins[0],h1,w1);    //getmaxyx(stdscr,row,col);
-    getmaxyx(my_wins[1],h2,w2);
-    //set_menu_win(my_menu, my_wins[0]);
-    int height,width;
-    getmaxyx(stdscr,height,width);
-    //mvprintw(10,2,"h2 is %d,w2 is %d\n",h2,w2);
-    set_menu_sub(my_menu, derwin(my_wins[0], h1-3, w1-3, 3, 2));
+    w1=getmaxx(my_wins[0]);
     set_menu_win(my_menu2, my_wins[1]);
-    //set_menu_sub(my_menu2, derwin(my_wins[1], height-h1-3, w2-3, h1+5, 2));
-    //set_menu_mark(my_menu, " * ");
     set_menu_mark(my_menu2, " * ");
-    //set_menu_grey(my_menu, 0);
-
-    post_menu(my_menu);
     post_menu(my_menu2);
-    wrefresh(my_wins[0]);
-    wrefresh(my_wins[1]);
-    doupdate();
+
     top = my_panels[0];
+
     char mseg[]="Send: ";
     mvprintw(1, w1/3, "Friends");
     int row,col;
     getmaxyx(stdscr,row,col);
     attron(A_BOLD);
     mvprintw(row-2,col/3,mseg);
-    while((ch = getch()) != KEY_F(1))
-    { 
+    wrefresh(my_wins[1]);
+    wrefresh(my_wins[0]);
+    refresh();
+    doupdate();
+    while(!core.online_remider)
+    { ch = getch();
         if(ch==9)   //tab
         {
             top = (PANEL *)panel_userptr(top);
@@ -242,11 +277,17 @@ void UI_Control::Init_ChatUI(vector<string> &choices)
         }
         if(top->win == my_wins[2])
                 {
-                    char usrnumb[10];
-                    mvprintw(row-2,col/3,mseg);
-                    echo();
-                    getstr(usrnumb);
-                    noecho();
+            if(core.Get_Sendto()!="n") {
+                char usrnumb[30];
+                mvprintw(row - 2, col / 3, mseg);
+                echo();
+                getstr(usrnumb);
+                if (strncmp(usrnumb, "", 1) != 0) {
+                    string mes = usrnumb;
+                    Send_Message(mes);
+                }
+                noecho();
+            }
                 }
         else if(top->win==my_wins[0])
         {
@@ -290,6 +331,7 @@ void UI_Control::Init_ChatUI(vector<string> &choices)
                 { ITEM *cur2;
                     void (*q)(char *,UI_Control&);
                     cur2 = current_item(my_menu2);
+
                     q = reinterpret_cast<void (*)(char *,UI_Control&)>(item_userptr(cur2));
                     q((char *)item_name(cur2),ref(*this));
                     pos_menu_cursor(my_menu2);
@@ -300,14 +342,56 @@ void UI_Control::Init_ChatUI(vector<string> &choices)
         }
         
     }
+    endwin();
     unpost_menu(my_menu);
     free_menu(my_menu);
-    for(i = 0; i < n_choices; ++i)
-        free_item(my_items[i]);
+    //for(i = 0; i < n_choices; ++i)
+      //  free_item(my_items[i]);
 
-    unpost_menu(my_menu2);
+    /*unpost_menu(my_menu2);
     free_menu(my_menu2);
     for(i = 0; i < n_choices2; ++i)
         free_item(my_items2[i]);
     endwin();*/
+    vector<string> nchoicess = core.Get_Friend_List();
+    //for(int k=0;k<nchoicess.size();k++)
+      //  printw(nchoicess[i].c_str());
+        //out<<"nchoices is "<<<<endl;
+    for(int k=0;k<nchoicess.size();k++)
+    {
+
+        for(auto const &l:choices)
+        {
+            if(nchoicess[k]==GetMyName())
+                nchoicess.erase(nchoicess.begin()+k);
+        }
+    }
+    Init_ChatUI(nchoicess);
+}
+
+void UI_Control::Send_Message(string msg) {
+    string namelen = core.Getmyname();
+    string sen;
+    sen.clear();
+    if(namelen.size()<10)
+    {
+        sen = "0";
+    }
+    sen+=to_string(namelen.size());
+    sen+=namelen;
+    sen +="#";
+    if(msg.size()<10)
+    {
+        sen += "0";
+    }
+    sen +=to_string(msg.size());
+    sen +=msg;
+    sen+= "^";
+
+    Proto_msg forsend;
+    forsend.set_flag(CHAT_TEXT_FLAG);
+    forsend.set_towhom(core.Get_Sendto());
+    forsend.set_info(sen);
+    core.Send(forsend);
+    Print_Prompt("msg sent!\n");
 }
