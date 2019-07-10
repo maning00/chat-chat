@@ -78,7 +78,8 @@ int msgsvr::acpt(int sockfd) //accept connection
     //snd_t.join();
     while(power)
     {
-        printf("waiting for new connection...\n");
+        time_t tm=time(nullptr);
+        cout<<ctime(&tm)<<"    "<<"waiting for new connection..."<<endl;
         //pthread_t thread_id;
         
         socklen_t len=sizeof(struct sockaddr);
@@ -90,7 +91,8 @@ int msgsvr::acpt(int sockfd) //accept connection
             fprintf(stderr,"Accept error!\n");
             continue;                               //ignore current socket ,continue while loop.
         }
-        printf("A new connection occurs!,sockfd is %d\n",nsock);
+        time_t tim=time(nullptr);
+        cout<<ctime(&tim)<<"    "<<"A new connection occurs!,sockfd is "<<"  "<<nsock<<endl;
         t[i]=std::thread(Data_Handle,std::ref(nsock),std::ref(*this));
         //t[i].join();
         i++;
@@ -114,10 +116,11 @@ int msgsvr::identfy(string name,string passwd,int sockfd)//check user, return us
             for(int i=0;i<olllusr.size();i++) {
                 string friend_name = olllusr[i].name;
                 if(friend_name != name) {
-                    Online_list_Response(friend_name);
+                    Online_list_Response(friend_name);   //发送的是所有在线人的列表
                 }
             }
-            cout<<name<<" log in,recvbuf is"<<passwd<<endl;
+            time_t t=time(nullptr);
+            cout<<ctime(&t)<<"    "<<name<<" log in,recvbuf is"<<passwd<<endl;
             ident.set_flag(LOGIN_FLAG);   //response
             ident.set_towhom(name);
             ident.set_info("1");
@@ -133,13 +136,14 @@ int msgsvr::identfy(string name,string passwd,int sockfd)//check user, return us
 
         vector<onlineuser> olllusr=onlinelst.Getolusr();       //获取此时在线列表
         for(int i=0;i<olllusr.size();i++) {           //通知所有朋友我上线了
-            string friend_name = olllusr[i].name;
+            string friend_name = olllusr[i].name;      //发送的是所有在线人的列表
             if(friend_name != name) {
                 Online_list_Response(friend_name);
             }
         }
         //login(namebuf, nsock);
-        cout<<name<<" registed,recvbuf is"<<passwd<<endl;
+        time_t tim=time(nullptr);
+        cout<<ctime(&tim)<<"    "<<name<<" registed,recvbuf is"<<passwd<<endl;
         //int a=acclist.empty();
         //printf("\n%d\n",a);
         //int cc=1;
@@ -163,11 +167,11 @@ void msgsvr::login(onlineuser *usr)
 }
 
 
-void msgsvr::logoff(std::string usrnum)
+void msgsvr::logoff(const std::string usrnum)
 {
     int sock=onlinelst.findusr(usrnum);
-    
-    onlinelst.removusr(onlinelst.findusrbysock(sock));
+    close(sock);
+    onlinelst.removusr(usrnum);
 }
 
 void msgsvr::Online_list_Response(string receiver)
@@ -197,33 +201,35 @@ void msgsvr::Message_Driver(Proto_msg &msg,int sockfd)     //对收取的消息�
     int f = msg.flag();
     string twhm = msg.towhom();
     string info = msg.info();
-    switch(f)
+    if (f==EXIT_FLAG)
     {
-        case LOGIN_FLAG:
-        {
-            //string ume=msg.towhom();
-            //string password=msg.info();
-            if(isLoged_In(twhm))
+        logoff(twhm);
+    }
+    else {
+        switch (f) {
+            case LOGIN_FLAG: {
+                //string ume=msg.towhom();
+                //string password=msg.info();
+                if (isLoged_In(twhm))
+                    break;
+                else
+                    identfy(twhm, info, sockfd);
                 break;
-            else
-            identfy(twhm,info,sockfd);
-            break;
-        }
-        case GETOL_FLAG:
-        {
-            Online_list_Response(twhm);
-            break;
-        }
-        case CHAT_TEXT_FLAG:
-        {
-            Send(msg);
-            break;
-        }
-        default:
-        {
-            //msg.set_flag(ERR_UNKNOWN_FLAG);
-            cout<<"Got an Unknown message: they are"<<endl<<msg.flag()<<endl<<msg.towhom()<<endl<<msg.info()<<endl;
-            break;
+            }
+            case GETOL_FLAG: {
+                Online_list_Response(twhm);
+                break;
+            }
+            case CHAT_TEXT_FLAG: {
+                Send(msg);
+                break;
+            }
+            default: {
+                time_t tim = time(nullptr);
+                cout << ctime(&tim) << "    " << "Got an Unknown message: they are" << "     " << msg.flag() << "     "
+                     << msg.towhom() << "     " << msg.info() << endl;
+                break;
+            }
         }
     }
     
@@ -244,7 +250,8 @@ static void *Data_snd(msgsvr& svr)
             int sockf = svr.findOnlineusr(toWhom);//通过towhom判断发给谁
             char buff[BUFFSIZE];
             presend.SerializePartialToArray(buff,BUFFSIZE);
-            cout<<"prepare to send, presend is "<<presend.flag()<<endl<<presend.towhom()<<endl<<presend.info()<<endl;
+            time_t tim=time(NULL);
+            cout<<ctime(&tim)<<"    ""prepare to send, presend is "<<presend.flag()<<"     "<<presend.towhom()<<"     "<<presend.info()<<endl;
             if(send(sockf,buff,strlen(buff),0) < 0)
             {
                 cout<<"send to"<<svr.GetOL_List().findusrbysock(sockf)<<"failed..."<<endl;
@@ -271,16 +278,23 @@ static void *Data_Handle(int& sockf,msgsvr& svr)  /*一个客户端对应一个�
         Proto_msg recv_msg;
         char buf1[BUFFSIZE];
         memset(&buf1, 0, BUFFSIZE * sizeof(char));
-        if (recv(sockf, buf1, sizeof(buf1), 0) < 0)
-            cout<<"Receive from "<<svr.GetOL_List().findusrbysock(sockf)<<"failed..."<<endl;
+        if (recv(sockf, buf1, sizeof(buf1), 0) < 0) {
+            cout << "Receive from " << svr.GetOL_List().findusrbysock(sockf) << "failed..." << endl;
+            break;
+        }
         else
         {
         recv_msg.ParseFromArray(buf1, BUFFSIZE);
-            cout<<"Received "<<recv_msg.flag()<<endl<<recv_msg.towhom()<<endl<<"and "<<recv_msg.info()<<endl;
+        time_t tim=time(nullptr);
+            cout<<ctime(&tim)<<"    "<<"Received "<<recv_msg.flag()<<"   "<<recv_msg.towhom()<<"    "<<"and "<<recv_msg.info()<<endl;
             //cout<<"imhere"<<endl;
         svr.Message_Driver(recv_msg,sockf);
+        if (recv_msg.flag()==EXIT_FLAG)
+            break;
         }
     }
+    time_t tim=time(nullptr);
+    cout<<ctime(&tim)<<"    "<<"Client "<<sockf<<"exited"<<endl;
     pthread_exit(nullptr);
 }
 

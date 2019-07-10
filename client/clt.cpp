@@ -257,7 +257,7 @@ void client::Client_driver(Proto_msg &msg)
         default:
         {
             //msg.set_flag(ERR_UNKNOWN_FLAG);
-            cout<<"Got an Unknown message: they are"<<endl<<msg.flag()<<endl<<msg.towhom()<<endl<<msg.info()<<endl;
+            //cout<<"Got an Unknown message: they are"<<endl<<msg.flag()<<endl<<msg.towhom()<<endl<<msg.info()<<endl;
             break;
         }
     }
@@ -305,6 +305,7 @@ void client::Exit() {
     ext.set_flag(EXIT_FLAG);
     ext.set_towhom(myname);
     Send(ext);
+    sleep(1);
     power= false;
     close(serversock);
     exit(0);

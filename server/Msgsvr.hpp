@@ -14,6 +14,7 @@
 #include <time.h>
 #include <string.h>
 #include<unistd.h>
+#include <time.h>
 #include <vector>
 #include "SharedQueue.h"
 #include "account.hpp"
@@ -43,7 +44,8 @@ enum Flag{
     LOGIN_FLAG =1,
     GETOL_FLAG=2,
     CHAT_TEXT_FLAG=3,
-    ERR_UNKNOWN_FLAG=4
+    ERR_UNKNOWN_FLAG=4,
+    EXIT_FLAG=5
 };
 
 class msgsvr{
