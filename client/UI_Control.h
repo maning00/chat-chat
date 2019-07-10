@@ -16,12 +16,14 @@ public:
     void print_in_middle(WINDOW *win, int starty, int startx, int width, char *string, chtype color);
     void init_wins(WINDOW **wins, int n);
     void Print_Prompt(const char* str);
-    void Init_ChatUI(vector<string> &choices);
+    void Init_ChatUI(vector<string> choices);
     void UI_EXIT(){core.Exit();}
     void Set_Sendto(string name){core.Set_Sendto(name);}
     void Send_Message(string msg);
+    void Clear_Chat();
     string GetMyName(){ return core.Getmyname();}
-
+    void Refresh_chatMsg();
+    void Backto_ChatUI(){Init_ChatUI(core.Get_Friend_List());}
     WINDOW *my_wins[3];
     PANEL *my_panels[3];
     PANEL *top;

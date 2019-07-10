@@ -25,11 +25,11 @@
 #include <vector>
 #include <thread>
 #include <fstream>
-
-//#include <dirent.h>
+#include <time.h>
 #include <mutex>
 #include <queue>
 #include "SharedQueue.h"
+#include "SharedVector.h"
 #include <menu.h>
 
 /*
@@ -44,7 +44,7 @@ message Proto_msg{
 explian                 flag                         toWhom                    info
 登陆验证                   1                           用户名                     密码
 请求在线用户列表            2                           自己的用户名
-发给其他用户               3                            目的用户名             2位数+自己用户名#+2位数+消息^
+发给其他用户               3                            目的用户名             2位数+自己用户名+2位数+消息
 错误消息                   4                          usrname                 消息内容
 下线                       5                            自己用户名
  */
@@ -53,7 +53,11 @@ using namespace protomsg::protobuf;
 const int BUFFSIZE = 128;
 
 
-
+typedef struct temp
+{
+    string name;
+    string content;
+}tmp;
 
 enum Flag{
     LOGIN_FLAG =1,
@@ -72,37 +76,41 @@ public:
 };
 class client{
 public:
-    explicit client();
-    int connectosvr(char *ipadd,int port);
-    int login(string username,string password);
+    client();
+    int connectosvr(char *ipadd,int port);   //连接服务器
+    int login(string username,string password);   //登陆
     void Reqst_Online_List();
-    void Client_driver(Proto_msg &msg);
-    void Decode_OL_List(string mesg);
-    void Chat_Text_Handle(Proto_msg &msg);
+    void Client_driver(Proto_msg &msg);    //客户端信息处理
+    void Decode_OL_List(string mesg);     //解码获得的在线用户列表
+    void Chat_Text_Handle(Proto_msg &msg);  //对话消息解码
     bool Add_Friend(std::string frid,bool status);
     void set_status(bool on);
     void Sendto_User(string username,string message);
     void Send(Proto_msg &msg);
-    void set_serversock(int sockfd){serversock = sockfd;};
-    bool power;
+    void set_serversock(int sockfd){serversock = sockfd;}
+    int Get_serversock(){return serversock;}
     string Getmyname(){return myname;}
-    void Setmyname(string nnm){myname = nnm;}
-    int serversock;
-    bool online_status;
+    void Setmyname(string &nnm){myname = nnm;}
     void Exit();
     bool friends_empty(){ return friends.empty();};
     vector<string> Get_Friend_List();
     void Set_Sendto(string &name){sendto = name;}
     string Get_Sendto(){ return sendto;}
     bool online_remider;
+    bool online_status;
+    bool power;
+    bool new_message_sign;   //当前对话方新消息提示
+    SharedQueue<tmp> waitting_response;     //在与一人聊天时另外的人有消息发送过来，则将他们的名字入队
     
 private:
+    int serversock;
     vector<my_friend> friends;
-    string myname;
     string sendto;
+    string myname;
     thread t[2];
 
 };
+
 
 
 #endif //UNTITLED1_CLT_H

@@ -8,7 +8,7 @@ char *choices2[] = {
         (char *)NULL,
 };
 
-
+int printCount;
 
 void func(char *name,UI_Control& ui);
 
@@ -64,8 +64,9 @@ int UI_Control::UI_Login()
     scanw("%s",passwd);
     string usr = usrnumb;
     string pass = passwd;
-    string str="n";     //暂无发送目标
-    core.Set_Sendto(str);
+    core.new_message_sign= false;
+    string sstr="n";     //暂无发送目标
+    core.Set_Sendto(sstr);
     //string usr="maning";
     //string pass = "mima";
     if(core.login(usr,pass)<0) {
@@ -105,25 +106,39 @@ void func(char *name,UI_Control& ui)
     string selected = name;
     if(selected == "Help")
     {
+        int c;
         clear();
-        int y,x;
-        getmaxyx(stdscr,y,x);
-        init_pair(5,COLOR_WHITE,COLOR_BLACK);
+        int y, x;
+        getmaxyx(stdscr, y, x);
+        init_pair(5, COLOR_WHITE, COLOR_BLACK);
         char about[] = "Press Tab to switch panel";
-        char abou[]="Press Enter to select";
-        char an[]="Any Question, Contact ningma1997@gmail.com";
-        ui.print_in_middle(stdscr,y/3,x/3, sizeof(about),about,5);
-        ui.print_in_middle(stdscr,y/3+2,x/3+2, sizeof(abou),abou,5);
-        ui.print_in_middle(stdscr,y/2+4,x/3-8, sizeof(an),an,5);
+        char abou[] = "Press Enter to select";
+        char an[] = "Any Question, Contact ningma1997@gmail.com";
+        ui.print_in_middle(stdscr, y / 3, x / 3, sizeof(about), about, 5);
+        ui.print_in_middle(stdscr, y / 3 + 2, x / 3 + 2, sizeof(abou), abou, 5);
+        ui.print_in_middle(stdscr, y / 2 + 4, x / 3 - 8, sizeof(an), an, 5);
+        while ((c=getch())!=KEY_F(1))
+        {
+
+        }
+        ui.Backto_ChatUI();
     }
     else if(selected=="About")
     {
+        int c;
         clear();
-        int y,x;
-        getmaxyx(stdscr,y,x);
-        init_pair(5,COLOR_BLUE,COLOR_BLACK);
-        char about[] = "Copyright© 2019 Ning.M";
-        ui.print_in_middle(stdscr,y/3,x/3, sizeof(about),about,5);
+        int y, x;
+        getmaxyx(stdscr, y, x);
+        init_pair(5, COLOR_BLUE, COLOR_BLACK);
+        char about[] = "Created by Ning.M";
+        ui.print_in_middle(stdscr, y / 3, x / 3, sizeof(about), about, 5);
+        char about2[] = "Copyright © 2019 All rights reserved.";
+        ui.print_in_middle(stdscr, y*3 / 4 + 1, x / 4, sizeof(about2), about2, 5);
+        while ((c=getch())!=KEY_F(1))
+        {
+
+        }
+        ui.Backto_ChatUI();
     }
     else if(selected == "Exit")
     {
@@ -136,6 +151,10 @@ void func(char *name,UI_Control& ui)
     else
     {
         ui.Set_Sendto(selected);
+        ui.Clear_Chat();
+        mvwprintw(ui.my_wins[2],1,3,"                   ");
+        mvwprintw(ui.my_wins[2],1,3,selected.c_str());
+        wrefresh(ui.my_wins[2]);
     }
     //mvprintw(20, 0, "Item selected is : %s", name);
 
@@ -190,15 +209,25 @@ void UI_Control::init_wins(WINDOW **wins, int n)
 
 void UI_Control::Print_Prompt(const char* str) {
     int y=getmaxy(stdscr);
+    attron(COLOR_BLUE);
     mvprintw(y-3,3,str);
+    attroff(COLOR_BLUE);
 }
 
 
-void UI_Control::Init_ChatUI(vector<string> &choices)
+void UI_Control::Init_ChatUI(vector<string> choices)
 {
+    for(int k=0;k<choices.size();k++) {
+        if (choices[k] == GetMyName())
+            choices.erase(choices.begin() + k);
+    }
+
     initscr(); start_color(); cbreak(); echo(); keypad(stdscr, TRUE);
-    ITEM **my_items = new ITEM*;
+    ITEM **my_items;
     clear();
+    int y=getmaxy(stdscr);
+    //for(int k=0;k<choices.size();k++)
+        //mvprintw(y-3-k,3,choices[k].c_str());
     core.online_remider=false;
     int n_choices,n_choices2;
     int ch;
@@ -221,10 +250,10 @@ void UI_Control::Init_ChatUI(vector<string> &choices)
     /*更新好友列表*/
     //unpost_menu(my_menu);
     //free_menu(my_menu);
-    int n_choices12 =choices.size();
-    my_items = (ITEM **)calloc(n_choices12 + 1, sizeof(ITEM *));
+    n_choices =choices.size();
+    my_items = (ITEM **)calloc(n_choices+1, sizeof(ITEM *));
     int i=0;
-    for(i = 0; i < n_choices12; ++i)
+    for(i = 0; i < n_choices; ++i)
     {
         my_items[i] = new_item(choices[i].c_str(), 0);
         set_item_userptr(my_items[i],(void *)func);
@@ -266,31 +295,46 @@ void UI_Control::Init_ChatUI(vector<string> &choices)
     wrefresh(my_wins[0]);
     refresh();
     doupdate();
-    while(!core.online_remider)
-    { ch = getch();
+    while(!core.online_remider)  //在线列表无变化则运行下面代码
+    {
+        ch = getch();
+        Refresh_chatMsg();
         if(ch==9)   //tab
         {
             top = (PANEL *)panel_userptr(top);
             top_panel(top);
             update_panels();
+            //Refresh_chatMsg();
         doupdate();
         }
         if(top->win == my_wins[2])
                 {
-            if(core.Get_Sendto()!="n") {
+            move(row - 2, col / 3+5);  //在对话框panel就把光标移到Send行
+            if(core.Get_Sendto()!="n") {   //如果用户选择了sendto的人
                 char usrnumb[30];
                 mvprintw(row - 2, col / 3, mseg);
+                refresh();
                 echo();
                 getstr(usrnumb);
+                noecho();
+                mvprintw(row - 2, col / 3+1, "                                ");
+                refresh();
                 if (strncmp(usrnumb, "", 1) != 0) {
                     string mes = usrnumb;
                     Send_Message(mes);
+                    int xx =getmaxx(my_wins[2]);
+                    mvwprintw(my_wins[2],printCount,xx-mes.size()-2,mes.c_str());
+                    printCount++;
+                    wrefresh(my_wins[2]);
                 }
-                noecho();
             }
                 }
         else if(top->win==my_wins[0])
         {
+            mvprintw(1, w1/3, "Friends");
+            refresh();
+            //wrefresh(my_wins[0]);
+            move(4,2);
             switch(ch)
             { case KEY_DOWN:
                     menu_driver(my_menu, REQ_DOWN_ITEM);
@@ -304,7 +348,7 @@ void UI_Control::Init_ChatUI(vector<string> &choices)
                 case KEY_LEFT:
                     menu_driver(my_menu, REQ_SCR_UPAGE);
                     break;
-                case 10:
+                case 10:   //Enter
                 {
                     ITEM *cur;
                     void (*p)(char *,UI_Control&);
@@ -354,18 +398,6 @@ void UI_Control::Init_ChatUI(vector<string> &choices)
         free_item(my_items2[i]);
     endwin();*/
     vector<string> nchoicess = core.Get_Friend_List();
-    //for(int k=0;k<nchoicess.size();k++)
-      //  printw(nchoicess[i].c_str());
-        //out<<"nchoices is "<<<<endl;
-    for(int k=0;k<nchoicess.size();k++)
-    {
-
-        for(auto const &l:choices)
-        {
-            if(nchoicess[k]==GetMyName())
-                nchoicess.erase(nchoicess.begin()+k);
-        }
-    }
     Init_ChatUI(nchoicess);
 }
 
@@ -379,19 +411,86 @@ void UI_Control::Send_Message(string msg) {
     }
     sen+=to_string(namelen.size());
     sen+=namelen;
-    sen +="#";
     if(msg.size()<10)
     {
         sen += "0";
     }
     sen +=to_string(msg.size());
     sen +=msg;
-    sen+= "^";
 
     Proto_msg forsend;
     forsend.set_flag(CHAT_TEXT_FLAG);
     forsend.set_towhom(core.Get_Sendto());
     forsend.set_info(sen);
     core.Send(forsend);
-    Print_Prompt("msg sent!\n");
+    //Print_Prompt("msg sent!\n");
+}
+
+
+void UI_Control::Clear_Chat()
+{
+    int x,y;
+    getmaxyx(my_wins[2],y,x);
+    for(int i=3;i<y-1;i++)
+    {
+        mvwprintw(my_wins[2],i,1,"%*s", x-2, " ");
+    }
+    printCount=3;   //初始从第三行开始打印
+}
+
+
+void UI_Control::Refresh_chatMsg()
+{
+    //queue<tmp> que = core.waitting_response;
+    if(core.new_message_sign)
+    {
+        string filename = core.Get_Sendto();
+        filename+=".txt";
+        int x=getmaxx(my_wins[2]);
+        FILE *fp;
+        char StrLine[x];             //每行最大读取的字符数
+        if((fp = fopen(filename.c_str(),"r")) == nullptr) //判断文件是否存在及可读
+        {
+            usleep(10000);
+        }
+
+        int height,width;
+        getmaxyx(stdscr,height,width);
+        while (!feof(fp))
+        {
+            if(printCount>height*8/9-2) {
+                Clear_Chat();
+            }
+            fgets(StrLine,x,fp);
+            mvwprintw(my_wins[2],printCount,2,StrLine);
+            wrefresh(my_wins[2]);
+            printCount++;
+            //printf("%s", StrLine);
+        }
+        fclose(fp);
+        core.new_message_sign=false;
+    }
+    else if(!core.waitting_response.empty()) {
+        if(core.waitting_response.size()>1)
+        {
+            core.waitting_response.pop_front();
+            tmp temp = core.waitting_response.front();
+            string sig = "A New Message From ";
+            sig += temp.name;
+            sig += ": ";
+            sig += temp.content;
+            //core.waitting_response.pop_front();
+            Print_Prompt(sig.c_str());
+        } else {
+            tmp temp = core.waitting_response.front();
+            string sig = "A New Message From ";
+            sig += temp.name;
+            sig += ": ";
+            sig += temp.content;
+            //core.waitting_response.pop_front();
+            Print_Prompt(sig.c_str());
+            //core.new_message_sign=false;
+        }
+        //else if ((!core.new_message_sign && core.waitting_response.front()==core.Get_Sendto()))
+    }
 }

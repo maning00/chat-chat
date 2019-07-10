@@ -63,14 +63,14 @@ int client::login(string username,string password)
     while(!online_status)
     {
         //cout<<"sleep"<<endl;
-        usleep(100000);
+        usleep(200000);
     }
     return 1;
 }
 
 void client::Send(Proto_msg &msg) {
     send_queue.push_back(msg);
-    cout<<"push_back "<<msg.flag()<<endl<<msg.towhom()<<endl<<msg.info()<<endl;
+    //cout<<"push_back "<<msg.flag()<<endl<<msg.towhom()<<endl<<msg.info()<<endl;
 }
 
 void client::Sendto_User(string username, string message)
@@ -143,11 +143,69 @@ bool client::Add_Friend(std::string frid,bool status) {
 
 void client::Chat_Text_Handle(Proto_msg &msg)
 {
-    string originmsg = msg.info();
+    const string &originmsg = msg.info();
     int namelen = atoi(originmsg.substr(0,2).c_str());
     int msglen = atoi(originmsg.substr(2+namelen,2).c_str());
     string sender_name =originmsg.substr(2,namelen);
     string messg = originmsg.substr(4+namelen,msglen);
+    if(sendto == sender_name) {
+        if(new_message_sign)
+            usleep(10000);
+        else {
+            FILE *fp;
+            sender_name += ".txt";    //以每位好友名字创建一个聊天记录临时文件
+            if ((fp = fopen(sender_name.c_str(), "wt+")) == nullptr) //打开文件string，不存在则自动创建
+            {
+                sleep(1);
+            }
+            time_t t;
+            t = time(nullptr);
+            std::string tt = ctime(&t);
+            std::string st = tt.substr(11, 8);
+            std::string ch = ":   ";
+            st += ch;
+            st += messg;
+            fwrite(st.c_str(), sizeof(st), 1, fp);    //size of///sizeof .c_str()?
+
+            fclose(fp);
+            new_message_sign = true;
+        }
+    } else {
+        tmp temp;
+        temp.name = sender_name;
+        temp.content = messg;
+        waitting_response.push_back(temp);     //有其他用户发来消息
+    }
+    /*if(new_message_sign)
+    {
+        if(sendto !=sender_name)
+        {
+            tmp temp;
+            temp.name = sender_name;
+            temp.content = messg;
+            waitting_response.push(temp);     //有其他用户发来消息
+        }
+
+    } else {
+        FILE *fp;
+        sender_name += ".txt";    //以每位好友名字创建一个聊天记录临时文件
+        if ((fp = fopen(sender_name.c_str(), "wt+")) == nullptr) //打开文件string，不存在则自动创建
+        {
+            sleep(1);
+        }
+        time_t t;
+        t = time(nullptr);
+        std::string tt = ctime(&t);
+        std::string st = tt.substr(11, 8);
+        std::string ch = ":   ";
+        st += ch;
+        st += messg;
+        fwrite(st.c_str(), sizeof(st), 1, fp);    //size of///sizeof .c_str()?
+        //fwrite(ch,sizeof(ch),1,fp);
+        //fwrite(messg.c_str(),sizeof(messg),1,fp);
+        fclose(fp);
+        new_message_sign = true;
+    }*/
 }
 
 void client::Decode_OL_List(string mesg)
@@ -155,10 +213,11 @@ void client::Decode_OL_List(string mesg)
     string strbuf="";
     string res;
     int i=0;
+    friends.clear();
     while(strbuf!="#")
     {
         int len = atoi(mesg.substr(i,2).c_str());
-        cout<<"len="<<len<<endl<<"mesg is"<<mesg<<endl;
+        //cout<<"len="<<len<<endl<<"mesg is"<<mesg<<endl;
         i+=2;
         string newfrid=mesg.substr(i,len);
         if(newfrid!=myname) {
@@ -212,10 +271,10 @@ static void *Send_Thread(client& clt)
         if(!send_queue.empty())
         {
             Proto_msg presend=send_queue.front();
-            cout<<"send "<<presend.flag()<<endl<<presend.towhom()<<endl<<presend.info()<<endl;
+            //cout<<"send "<<presend.flag()<<endl<<presend.towhom()<<endl<<presend.info()<<endl;
             char buff[BUFFSIZE];
             presend.SerializePartialToArray(buff,BUFFSIZE);
-            if(send(clt.serversock,buff,strlen(buff),0) < 0)
+            if(send(clt.Get_serversock(),buff,strlen(buff),0) < 0)
             {
                 cout<<"send failed..."<<endl;
             }
@@ -232,10 +291,10 @@ static void *Recv_Thread(client& clt)
         Proto_msg recv_msg;
         char buf1[BUFFSIZE];
         memset(&buf1, 0, BUFFSIZE * sizeof(char));
-        if (recv(clt.serversock, buf1, sizeof(buf1), 0) < 0)
+        if (recv(clt.Get_serversock(), buf1, sizeof(buf1), 0) < 0)
             cout<<"Receive failed..."<<endl;
         recv_msg.ParseFromArray(buf1, BUFFSIZE);
-        cout<<"Received "<<recv_msg.flag()<<endl<<recv_msg.towhom()<<endl<<"and "<<recv_msg.info()<<endl;
+        //cout<<"Received "<<recv_msg.flag()<<endl<<recv_msg.towhom()<<endl<<"and "<<recv_msg.info()<<endl;
         clt.Client_driver(recv_msg);
     }
     pthread_exit(nullptr);
