@@ -47,6 +47,7 @@ explian                 flag                         toWhom                    i
 发给其他用户               3                            目的用户名             2位数+自己用户名+2位数+消息
 错误消息                   4                          usrname                 消息内容
 下线                       5                            自己用户名
+ 群聊                      6                            自己用户名                消息内容
  */
 using namespace std;
 using namespace protomsg::protobuf;
@@ -64,7 +65,8 @@ enum Flag{
     GETOL_FLAG=2,
     CHAT_TEXT_FLAG=3,
     ERR_UNKNOWN_FLAG=4,
-    EXIT_FLAG=5
+    EXIT_FLAG=5,
+    GROUT_FLAG=6
 };
 
 class my_friend
@@ -83,6 +85,7 @@ public:
     void Client_driver(Proto_msg &msg);    //客户端信息处理
     void Decode_OL_List(string mesg);     //解码获得的在线用户列表
     void Chat_Text_Handle(Proto_msg &msg);  //对话消息解码
+    void Group_Text_Handle(Proto_msg &msg);
     bool Add_Friend(std::string frid,bool status);
     void set_status(bool on);
     void Sendto_User(string username,string message);

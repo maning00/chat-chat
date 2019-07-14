@@ -69,6 +69,9 @@ int client::login(string username,string password)
 }
 
 void client::Send(Proto_msg &msg) {
+    if(msg.towhom()=="all") {
+        msg.set_flag(GROUT_FLAG);
+    }
     send_queue.push_back(msg);
     //cout<<"push_back "<<msg.flag()<<endl<<msg.towhom()<<endl<<msg.info()<<endl;
 }
@@ -139,7 +142,44 @@ bool client::Add_Friend(std::string frid,bool status) {
     return true;
 }
 
+void client::Group_Text_Handle(Proto_msg &msg) {
+    const string &originmsg = msg.info();
+    int namelen = atoi(originmsg.substr(0,2).c_str());
+    int msglen = atoi(originmsg.substr(2+namelen,2).c_str());
+    string sender_name =originmsg.substr(2,namelen);
+    string messg = originmsg.substr(4+namelen,msglen);
+    string file_name;
+    if(sendto == "all") {
+        if(new_message_sign)
+            usleep(10000);
+        else {
+            FILE *fp;
+            file_name = "all.txt";    //以每位好友名字创建一个聊天记录临时文件
+            if ((fp = fopen(file_name.c_str(), "wt+")) == nullptr) //打开文件string，不存在则自动创建
+            {
+                sleep(1);
+            }
+            time_t t;
+            t = time(nullptr);
+            std::string tt = ctime(&t);
+            std::string st = tt.substr(11, 8);
+            std::string ch = ":   ";
+            //st += ch;
+            string ii=sender_name;
+            ii+=ch;
+            ii += messg;
+            fwrite(ii.c_str(), sizeof(ii), 1, fp);    //size of///sizeof .c_str()?
 
+            fclose(fp);
+            new_message_sign = true;
+        }
+    } else {
+        tmp temp;
+        temp.name = "all";
+        temp.content = messg;
+        waitting_response.push_back(temp);     //有其他用户发来消息
+    }
+}
 
 void client::Chat_Text_Handle(Proto_msg &msg)
 {
@@ -176,36 +216,7 @@ void client::Chat_Text_Handle(Proto_msg &msg)
         temp.content = messg;
         waitting_response.push_back(temp);     //有其他用户发来消息
     }
-    /*if(new_message_sign)
-    {
-        if(sendto !=sender_name)
-        {
-            tmp temp;
-            temp.name = sender_name;
-            temp.content = messg;
-            waitting_response.push(temp);     //有其他用户发来消息
-        }
 
-    } else {
-        FILE *fp;
-        sender_name += ".txt";    //以每位好友名字创建一个聊天记录临时文件
-        if ((fp = fopen(sender_name.c_str(), "wt+")) == nullptr) //打开文件string，不存在则自动创建
-        {
-            sleep(1);
-        }
-        time_t t;
-        t = time(nullptr);
-        std::string tt = ctime(&t);
-        std::string st = tt.substr(11, 8);
-        std::string ch = ":   ";
-        st += ch;
-        st += messg;
-        fwrite(st.c_str(), sizeof(st), 1, fp);    //size of///sizeof .c_str()?
-        //fwrite(ch,sizeof(ch),1,fp);
-        //fwrite(messg.c_str(),sizeof(messg),1,fp);
-        fclose(fp);
-        new_message_sign = true;
-    }*/
 }
 
 void client::Decode_OL_List(string mesg)
@@ -254,6 +265,10 @@ void client::Client_driver(Proto_msg &msg)
             Chat_Text_Handle(msg);
             break;
         }
+        case GROUT_FLAG:
+        {
+            Group_Text_Handle(msg);
+        }
         default:
         {
             //msg.set_flag(ERR_UNKNOWN_FLAG);
@@ -278,7 +293,7 @@ static void *Send_Thread(client& clt)
             {
                 cout<<"send failed..."<<endl;
             }
-
+            //cout<<"sent"<<endl;
             send_queue.pop_front();
         }
         usleep(100000);

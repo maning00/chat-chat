@@ -30,9 +30,9 @@ int UI_Control::Init_MainUI()
     int row,col;
     getmaxyx(stdscr,row,col);
     attron(A_BOLD);
-    mvprintw(row/3,(col-strlen(msegg))/2, "%s",msegg);
+    mvprintw(row/3,(col-strlen(msegg))/2-3, "%s",msegg);
     scanw("%s",ipad);
-    mvprintw(row/3+2, (col-strlen(msegg))/2, "%s",msgg2);
+    mvprintw(row/3+2, (col-strlen(msegg))/2-3, "%s",msgg2);
     attroff(A_BOLD);
     scanw("%s",pot);
     int port1 = atoi(pot);
@@ -50,16 +50,19 @@ int UI_Control::Init_MainUI()
 int UI_Control::UI_Login()
 {
     clear();
-    char mseg[]="User Number:";
+    box(stdscr,0,0);
+    char mseg[]="User Name:";
     char usrnumb[PWDSIZE];
     char msg2[]="Password:";
     char passwd[PWDSIZE];
+    char msg3[]="Log in / Register";
     int row,col;
     getmaxyx(stdscr,row,col);
     attron(A_BOLD);
-    mvprintw(row/3,(col-strlen(mseg))/2, "%s",mseg);
+    mvprintw(row/3,(col-strlen(mseg))/2-2, "%s",mseg);
     scanw("%s",usrnumb);
-    mvprintw(row/3+2, (col-strlen(mseg))/2, "%s",msg2);
+    mvprintw(row/3+4,(col-strlen(mseg))/2-2,"%s",msg3);
+    mvprintw(row/3+2, (col-strlen(mseg))/2-2, "%s",msg2);
     attroff(A_BOLD);
     scanw("%s",passwd);
     string usr = usrnumb;
@@ -468,6 +471,9 @@ void UI_Control::Refresh_chatMsg()
             //printf("%s", StrLine);
         }
         fclose(fp);
+        string del = "rm -f ";
+        del+=filename;
+        system(del.c_str());
         core.new_message_sign=false;
     }
     else if(!core.waitting_response.empty()) {
@@ -481,6 +487,8 @@ void UI_Control::Refresh_chatMsg()
             sig += temp.content;
             //core.waitting_response.pop_front();
             Print_Prompt(sig.c_str());
+            //getch();
+            //Print_Prompt("                                               ");
         } else {
             tmp temp = core.waitting_response.front();
             string sig = "A New Message From ";
@@ -489,6 +497,8 @@ void UI_Control::Refresh_chatMsg()
             sig += temp.content;
             //core.waitting_response.pop_front();
             Print_Prompt(sig.c_str());
+            //getch();
+            //Print_Prompt("                                               ");
             //core.new_message_sign=false;
         }
         //else if ((!core.new_message_sign && core.waitting_response.front()==core.Get_Sendto()))

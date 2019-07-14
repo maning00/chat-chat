@@ -15,7 +15,7 @@ const int PWDSIZE=10;
 const int client_number=6;
 SharedQueue<Proto_msg> send_queue;
 static void *Data_snd(msgsvr& svr);    //一个发送线程处理所有发送
-static void *Data_Handle(int& sockf,msgsvr& svr);   /* 一个客户端对应一个处理线程（收数据、处理数据） */
+static void *Data_Handle(int sockf,msgsvr& svr);   /* 一个客户端对应一个处理线程（收数据、处理数据） */
 
 void msgsvr::Init(){
     printf("Welcome!\n");
@@ -23,13 +23,14 @@ void msgsvr::Init(){
     acclist=aclist;
     OnlineUsr_List onli =OnlineUsr_List();
     onlinelst = onli;
-    
+    string all = "all";
+    onlinelst.addusr(all,0);
     printf("Please Input IP address to bind:  ");
-    char ipadd[12]="127.0.0.1";
-    //scanf("%s",ipadd);
-    //printf("Please Input Port:  ");
-    int port1=5019;
-    //scanf("%d",&port1);
+    char ipadd[12];
+    scanf("%s",ipadd);
+    printf("Please Input Port:  ");
+    int port1;
+    scanf("%d",&port1);
     int sockfd=bindipport(ipadd,port1);
     if(sockfd==-1)
     {
@@ -93,7 +94,9 @@ int msgsvr::acpt(int sockfd) //accept connection
         }
         time_t tim=time(nullptr);
         cout<<ctime(&tim)<<"    "<<"A new connection occurs!,sockfd is "<<"  "<<nsock<<endl;
-        t[i]=std::thread(Data_Handle,std::ref(nsock),std::ref(*this));
+
+        t[i] = std::thread(Data_Handle, std::ref(nsock), std::ref(*this));
+
         //t[i].join();
         i++;
     }
@@ -105,6 +108,7 @@ int msgsvr::identfy(string name,string passwd,int sockfd)//check user, return us
 {
     User *oneusr=acclist.findusr(name);
     Proto_msg ident;
+
 
     if(oneusr !=nullptr)
     {
@@ -127,6 +131,14 @@ int msgsvr::identfy(string name,string passwd,int sockfd)//check user, return us
             Send(ident);
             return sockfd;
         }
+        else{
+            ident.set_flag(LOGIN_FLAG);
+            ident.set_towhom(name);
+            ident.set_info("0");
+            Send(ident);   //发送登陆失败回复
+            return -1;
+        }
+
     }
     else if (oneusr== nullptr)
     {
@@ -204,6 +216,13 @@ void msgsvr::Message_Driver(Proto_msg &msg,int sockfd)     //对收取的消息�
     if (f==EXIT_FLAG)
     {
         logoff(twhm);
+        vector<onlineuser> olllusr=onlinelst.Getolusr();       //获取此时在线列表
+        for(int i=0;i<olllusr.size();i++) {
+            string friend_name = olllusr[i].name;
+            if(friend_name != twhm) {
+                Online_list_Response(friend_name);   //发送的是所有在线人的列表
+            }
+        }
     }
     else {
         switch (f) {
@@ -224,6 +243,9 @@ void msgsvr::Message_Driver(Proto_msg &msg,int sockfd)     //对收取的消息�
                 Send(msg);
                 break;
             }
+            case GROUP_FLAG: {
+                GROUP_Msg(msg);
+            }
             default: {
                 time_t tim = time(nullptr);
                 cout << ctime(&tim) << "    " << "Got an Unknown message: they are" << "     " << msg.flag() << "     "
@@ -235,6 +257,23 @@ void msgsvr::Message_Driver(Proto_msg &msg,int sockfd)     //对收取的消息�
     
 }
 
+void msgsvr::GROUP_Msg(Proto_msg &msg) {
+    vector<onlineuser> list=onlinelst.Getolusr();
+    string originmsg = msg.info();
+    int namelen = atoi(originmsg.substr(0,2).c_str());
+    int msglen = atoi(originmsg.substr(2+namelen,2).c_str());
+    string sender_name =originmsg.substr(2,namelen);
+    if(list.size()>1)
+    {
+        for(int i =0;i<list.size();i++)
+        {
+            Proto_msg ori = msg;
+            if(list[i].name != sender_name)
+            ori.set_towhom(list[i].name);
+            Send(ori);
+        }
+    }
+}
 
 static void *Data_snd(msgsvr& svr)
 {
@@ -270,14 +309,15 @@ static void *Data_snd(msgsvr& svr)
 }
 
 
-static void *Data_Handle(int& sockf,msgsvr& svr)  /*一个客户端对应一个处理线程 接收然后处理 */
+static void *Data_Handle(int sockf,msgsvr& svr)  /*一个客户端对应一个处理线程 接收然后处理 */
 {
 
     while(svr.power) {
-        sleep(1);
+        usleep(1000);
         Proto_msg recv_msg;
         char buf1[BUFFSIZE];
         memset(&buf1, 0, BUFFSIZE * sizeof(char));
+        cout<<"listening "<<"sockf"<<sockf<<endl;
         if (recv(sockf, buf1, sizeof(buf1), 0) < 0) {
             cout << "Receive from " << svr.GetOL_List().findusrbysock(sockf) << "failed..." << endl;
             break;
@@ -297,6 +337,9 @@ static void *Data_Handle(int& sockf,msgsvr& svr)  /*一个客户端对应一个�
     cout<<ctime(&tim)<<"    "<<"Client "<<sockf<<"exited"<<endl;
     pthread_exit(nullptr);
 }
+
+
+
 
 
 /*

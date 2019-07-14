@@ -1,3 +1,11 @@
+//
+//  account.hpp
+//  chat-svr
+//
+//  Created by 马宁 on 2019/6/27.
+//  Copyright © 2019 马宁. All rights reserved.
+//
+
 #ifndef SERVER_HPP
 #define SERVER_HPP
 

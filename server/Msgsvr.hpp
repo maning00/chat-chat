@@ -1,3 +1,11 @@
+//
+//  msgsvr.hpp
+//  chat-svr
+//
+//  Created by 马宁 on 2019/6/27.
+//  Copyright © 2019 马宁. All rights reserved.
+//
+
 #ifndef MSGSVR_HPP
 #define MSGSVR_HPP
 
@@ -37,15 +45,16 @@ explian                 flag                         toWhom                    i
  在线用户列表回应            2                          usrname              #无人 两位数+用户名#结束
 用户间文字消息              3                         目的用户名             位数+发方用户名#+位数+消息^
 错误消息                   4                          usrname                 消息内容    
-
-
+下线                       5                            发方用户名
+群聊                       6                           all                   位数+发方用户名#+位数+消息^
  */
 enum Flag{
     LOGIN_FLAG =1,
     GETOL_FLAG=2,
     CHAT_TEXT_FLAG=3,
     ERR_UNKNOWN_FLAG=4,
-    EXIT_FLAG=5
+    EXIT_FLAG=5,
+    GROUP_FLAG=6
 };
 
 class msgsvr{
@@ -63,6 +72,7 @@ class msgsvr{
     OnlineUsr_List GetOL_List(){return onlinelst;}
     accountList GetACC_List(){return acclist;}
     void Message_Driver(Proto_msg &msg,int sockfd);
+    void GROUP_Msg(Proto_msg &msg);
     bool power;
     bool isLoged_In(string name){
         if(onlinelst.findusr(name)>0)
