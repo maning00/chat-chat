@@ -1,0 +1,1 @@
+/Library/Developer/CommandLineTools/usr/bin/c++  -lprotobuf -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk -Wl,-search_paths_first -Wl,-headerpad_max_install_names  CMakeFiles/server.dir/main.cpp.o CMakeFiles/server.dir/account.cpp.o CMakeFiles/server.dir/msgsvr.cpp.o CMakeFiles/server.dir/protomsg.pb.cc.o  -o server 

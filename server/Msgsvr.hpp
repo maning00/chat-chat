@@ -11,18 +11,18 @@
 
 #include<sys/types.h>
 #include<sys/socket.h>
-#include<stdio.h>
+#include<cstdio>
 #include <cstdio>
-#include<stdlib.h>
+#include<cstdlib>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-#include<assert.h>
+#include<cassert>
 #include<pthread.h>
 #include "protomsg.pb.h"
-#include <time.h>
-#include <string.h>
+#include <ctime>
+#include <cstring>
 #include<unistd.h>
-#include <time.h>
+#include <ctime>
 #include <vector>
 #include "SharedQueue.h"
 #include "account.hpp"
@@ -75,10 +75,8 @@ class msgsvr{
     void GROUP_Msg(Proto_msg &msg);
     bool power;
     bool isLoged_In(string name){
-        if(onlinelst.findusr(name)>0)
-            return true;
-        else
-            return false;}
+        return onlinelst.findusr(name) > 0;
+    }
     
     
     
