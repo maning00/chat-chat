@@ -1,6 +1,6 @@
 # chat-chat
 A simple command-line based live chat software, both server and client.
-Protobuf required.
+</br>**Protobuf required.**
 - ncurses-based command-line graphical interface
 - Private chat and group chat
 - Server forwards messages
